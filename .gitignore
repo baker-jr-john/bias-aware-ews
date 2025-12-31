@@ -40,5 +40,6 @@ reports/*_files/
 *.log
 .cache/
 
-# Claude Code local settings
-.claude/settings.local.json
+# Claude Code
+.claude/
+CLAUDE.md

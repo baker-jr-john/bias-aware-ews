@@ -27,8 +27,7 @@ The baseline model exhibited significant bias across protected attributes (espec
 ├── notebooks/                # Analysis pipeline (01-10)
 ├── models/                   # Trained PyTorch models (.pt)
 ├── figures/                  # Visualizations (PNG)
-├── docs/                     # Reference materials
-└── CLAUDE.md                 # Project documentation
+└── docs/                     # Reference materials
 ```
 
 ## Dataset
