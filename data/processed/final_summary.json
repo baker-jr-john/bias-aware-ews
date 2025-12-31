@@ -1,0 +1,42 @@
+{
+  "model_performance": {
+    "auc_roc": 0.8889172777737862,
+    "auc_pr": 0.9187453600208577,
+    "accuracy": 0.81264062180405,
+    "precision": 0.8824069820854387,
+    "recall": 0.7442851607903913,
+    "f1_score": 0.8074821353509877,
+    "target_met": true
+  },
+  "fairness_audit": {
+    "attributes_analyzed": 5,
+    "fair_attributes": [
+      "gender"
+    ],
+    "unfair_attributes": [
+      "region",
+      "imd_band",
+      "age_band",
+      "disability"
+    ],
+    "highest_bias": "region"
+  },
+  "mitigation_results": {
+    "approaches_tested": [
+      "Reweighting",
+      "Threshold Optimization",
+      "Reject Option Classification"
+    ],
+    "recommended": {
+      "region": "Threshold Optimization",
+      "imd_band": "Threshold Optimization",
+      "disability": "Reweighted",
+      "age_band": "Threshold Optimization"
+    },
+    "all_maintained_auc_target": true
+  },
+  "intersectional_analysis": {
+    "critical_issues_found": false,
+    "all_subgroups_above_auc_target": true
+  }
+}

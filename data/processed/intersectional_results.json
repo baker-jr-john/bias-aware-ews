@@ -1,0 +1,24 @@
+{
+  "overall_selection_rate": 0.44528533442421764,
+  "overall_base_rate": 0.5279198200040908,
+  "selection_rate_range": {
+    "min": 0.3346774193548387,
+    "max": 0.6011730205278593,
+    "range": 0.26649560117302057
+  },
+  "auc_range": {
+    "min": 0.8519179304192686,
+    "max": 0.8977338420626662,
+    "all_above_target": true
+  },
+  "problematic_groups": {
+    "high_selection_disparity": true,
+    "low_auc": false
+  },
+  "intersections_analyzed": [
+    "Region \u00d7 IMD",
+    "Region \u00d7 Disability",
+    "IMD \u00d7 Disability",
+    "Gender \u00d7 Region"
+  ]
+}

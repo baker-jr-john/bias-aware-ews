@@ -1,0 +1,72 @@
+{
+  "target_attribute": "disability",
+  "privileged_groups": [
+    "N"
+  ],
+  "unprivileged_groups": [
+    "Y"
+  ],
+  "approaches": {
+    "baseline": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7384682332463012,
+      "privileged_fpr": 0.10543580131208997,
+      "privileged_selection_rate": 0.43366425992779783,
+      "privileged_auc": 0.889171995043977,
+      "unprivileged_tpr": 0.7915194346289752,
+      "unprivileged_fpr": 0.1781609195402299,
+      "unprivileged_selection_rate": 0.5579868708971554,
+      "unprivileged_auc": 0.8769546322245237,
+      "spd": 0.12432261096935754,
+      "eod": 0.05305120138267405,
+      "eq_odds": 0.12577631961081398
+    },
+    "reweighted": {
+      "auc": 0.8873990506547984,
+      "privileged_tpr": 0.7454308093994778,
+      "privileged_fpr": 0.1148078725398313,
+      "privileged_selection_rate": 0.4417870036101083,
+      "privileged_auc": 0.888866933717678,
+      "unprivileged_tpr": 0.7243816254416962,
+      "unprivileged_fpr": 0.1206896551724138,
+      "unprivileged_selection_rate": 0.49452954048140046,
+      "unprivileged_auc": 0.8738272206652858,
+      "spd": 0.052742536871292156,
+      "eod": -0.02104918395778166,
+      "eq_odds": 0.02693096659036416
+    },
+    "threshold_optimization": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7432550043516101,
+      "privileged_fpr": 0.11246485473289597,
+      "privileged_selection_rate": 0.4395306859205776,
+      "privileged_auc": 0.889171995043977,
+      "unprivileged_tpr": 0.7455830388692579,
+      "unprivileged_fpr": 0.16091954022988506,
+      "unprivileged_selection_rate": 0.5229759299781181,
+      "unprivileged_auc": 0.8769546322245237,
+      "spd": 0.08344524405754056,
+      "eod": 0.002328034517647848,
+      "eq_odds": 0.050782720014636934
+    },
+    "reject_option_classification": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.3128807658833769,
+      "privileged_fpr": 0.930178069353327,
+      "privileged_selection_rate": 0.6101083032490975,
+      "privileged_auc": 0.889171995043977,
+      "unprivileged_tpr": 0.28975265017667845,
+      "unprivileged_fpr": 0.8908045977011494,
+      "unprivileged_selection_rate": 0.5185995623632386,
+      "unprivileged_auc": 0.8769546322245237,
+      "spd": -0.09150874088585892,
+      "eod": -0.023128115706698427,
+      "eq_odds": 0.06250158735887607
+    }
+  },
+  "recommendation": "Reweighted",
+  "thresholds_by_group": {
+    "privileged": 0.49,
+    "unprivileged": 0.54
+  }
+}

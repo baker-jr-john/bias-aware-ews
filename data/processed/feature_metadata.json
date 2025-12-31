@@ -1,0 +1,101 @@
+{
+  "temporal_features": {
+    "shape": [
+      32593,
+      10,
+      5
+    ],
+    "feature_names": [
+      "total_clicks",
+      "active_days",
+      "n_sessions",
+      "activity_types",
+      "avg_daily_clicks"
+    ],
+    "week_mapping": {
+      "0": "week_-1",
+      "1": "week_0",
+      "2": "week_1",
+      "3": "week_2",
+      "4": "week_3",
+      "5": "week_4",
+      "6": "week_5",
+      "7": "week_6",
+      "8": "week_7",
+      "9": "week_8"
+    },
+    "description": "Weekly aggregated VLE engagement features"
+  },
+  "static_features": {
+    "id_columns": [
+      "student_key",
+      "id_student",
+      "code_module",
+      "code_presentation"
+    ],
+    "protected_columns": [
+      "gender",
+      "region",
+      "imd_band_imputed",
+      "age_band",
+      "disability"
+    ],
+    "feature_columns": [
+      "gender_encoded",
+      "age_band_encoded",
+      "disability_encoded",
+      "education_encoded",
+      "imd_band_encoded",
+      "num_of_prev_attempts",
+      "studied_credits",
+      "n_assessments_submitted",
+      "avg_score",
+      "min_score",
+      "max_score",
+      "avg_days_early",
+      "std_score",
+      "submission_rate"
+    ],
+    "target_column": "at_risk"
+  },
+  "encodings": {
+    "gender": {
+      "M": 1,
+      "F": 0
+    },
+    "age_band": {
+      "0-35": 0,
+      "35-55": 1,
+      "55<=": 2
+    },
+    "disability": {
+      "N": 0,
+      "Y": 1
+    },
+    "highest_education": {
+      "No Formal quals": 0,
+      "Lower Than A Level": 1,
+      "A Level or Equivalent": 2,
+      "HE Qualification": 3,
+      "Post Graduate Qualification": 4
+    },
+    "imd_band": {
+      "0-10%": 0,
+      "10-20": 1,
+      "20-30%": 2,
+      "30-40%": 3,
+      "40-50%": 4,
+      "50-60%": 5,
+      "60-70%": 6,
+      "70-80%": 7,
+      "80-90%": 8,
+      "90-100%": 9
+    }
+  },
+  "preprocessing": {
+    "early_window_pct": 0.25,
+    "imd_imputation": "mode_by_region",
+    "n_weeks": 10,
+    "week_range": "-1 to 8 (index 0 = pre-course)"
+  }
+}

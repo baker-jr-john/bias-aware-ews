@@ -1,0 +1,83 @@
+{
+  "target_attribute": "region",
+  "privileged_groups": [
+    "Ireland",
+    "North Region",
+    "South East Region",
+    "South Region"
+  ],
+  "unprivileged_groups": [
+    "East Anglian Region",
+    "East Midlands Region",
+    "London Region",
+    "North Western Region",
+    "Scotland",
+    "South West Region",
+    "Wales",
+    "West Midlands Region",
+    "Yorkshire Region"
+  ],
+  "approaches": {
+    "baseline": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7296819787985865,
+      "privileged_fpr": 0.09792284866468842,
+      "privileged_selection_rate": 0.38629032258064516,
+      "privileged_auc": 0.8926743978777615,
+      "unprivileged_tpr": 0.7483870967741936,
+      "unprivileged_fpr": 0.11627906976744186,
+      "unprivileged_selection_rate": 0.4653329679364209,
+      "unprivileged_auc": 0.8868896373891044,
+      "spd": 0.07904264535577576,
+      "eod": 0.018705117975607033,
+      "eq_odds": 0.03706133907836047
+    },
+    "reweighted": {
+      "auc": 0.887817889294988,
+      "privileged_tpr": 0.7473498233215548,
+      "privileged_fpr": 0.10237388724035608,
+      "privileged_selection_rate": 0.3967741935483871,
+      "privileged_auc": 0.8914633379119439,
+      "unprivileged_tpr": 0.7543424317617866,
+      "unprivileged_fpr": 0.1303549571603427,
+      "unprivileged_selection_rate": 0.4749246368868183,
+      "unprivileged_auc": 0.8857798457711594,
+      "spd": 0.07815044333843119,
+      "eod": 0.006992608440231862,
+      "eq_odds": 0.03497367836021849
+    },
+    "threshold_optimization": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7473498233215548,
+      "privileged_fpr": 0.10682492581602374,
+      "privileged_selection_rate": 0.39919354838709675,
+      "privileged_auc": 0.8926743978777615,
+      "unprivileged_tpr": 0.7429280397022332,
+      "unprivileged_fpr": 0.10954712362301101,
+      "unprivileged_selection_rate": 0.45930391888188543,
+      "unprivileged_auc": 0.8868896373891044,
+      "spd": 0.06011037049478868,
+      "eod": -0.004421783619321551,
+      "eq_odds": 0.007143981426308829
+    },
+    "reject_option_classification": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.3763250883392226,
+      "privileged_fpr": 0.9629080118694362,
+      "privileged_selection_rate": 0.6951612903225807,
+      "privileged_auc": 0.8926743978777615,
+      "unprivileged_tpr": 0.36823821339950374,
+      "unprivileged_fpr": 0.9583843329253366,
+      "unprivileged_selection_rate": 0.6325020553576323,
+      "unprivileged_auc": 0.8868896373891044,
+      "spd": -0.06265923496494841,
+      "eod": -0.00808687493971888,
+      "eq_odds": 0.012610553883818432
+    }
+  },
+  "recommendation": "Threshold Optimization",
+  "thresholds_by_group": {
+    "privileged": 0.48000000000000004,
+    "unprivileged": 0.51
+  }
+}
