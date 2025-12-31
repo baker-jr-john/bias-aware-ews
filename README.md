@@ -61,7 +61,7 @@ python -m venv venv
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
 # Install dependencies
-pip install numpy pandas scikit-learn torch matplotlib seaborn aif360 jupyter
+pip install -r requirements.txt
 ```
 
 ## Notebooks

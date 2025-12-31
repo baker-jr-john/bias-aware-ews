@@ -1,0 +1,17 @@
+# Core data science
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.7.2
+
+# Deep learning
+torch==2.2.2
+
+# Visualization
+matplotlib==3.10.8
+seaborn==0.13.2
+
+# Fairness toolkit
+aif360==0.6.1
+
+# Jupyter
+jupyterlab==4.4.10
