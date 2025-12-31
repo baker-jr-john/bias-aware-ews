@@ -27,7 +27,6 @@ The baseline model exhibited significant bias across protected attributes (espec
 ├── notebooks/                # Analysis pipeline (01-10)
 ├── models/                   # Trained PyTorch models (.pt)
 ├── figures/                  # Visualizations (PNG)
-├── reports/                  # Quarto report (.qmd)
 ├── docs/                     # Reference materials
 └── CLAUDE.md                 # Project documentation
 ```
@@ -53,8 +52,8 @@ Required files:
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
-cd REPO_NAME
+git clone https://github.com/baker-jr-john/bias-aware-ews.git
+cd bias-aware-ews
 
 # Create virtual environment
 python -m venv venv
@@ -114,13 +113,6 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 | IMD Band | Unfair (2/4) | Threshold Optimization | 0.889 |
 | Disability | Unfair (2/4) | Reweighting | 0.887 |
 | Age Band | Unfair (2/4) | Threshold Optimization | 0.889 |
-
-## Generating the Report
-
-```bash
-# Requires Quarto (https://quarto.org)
-quarto render reports/final_summary_report.qmd --to html
-```
 
 ## License
 

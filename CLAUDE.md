@@ -39,7 +39,6 @@ Capstone_Project/
 │   ├── lstm_baseline.pt             # Baseline model checkpoint
 │   └── lstm_reweighted_region.pt    # Reweighted model for region
 ├── figures/                  # Visualizations (PNG)
-├── reports/                  # Quarto reports (.qmd)
 ├── docs/                     # Reference materials
 ├── src/                      # Reusable Python modules (future)
 └── CLAUDE.md
