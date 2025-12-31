@@ -32,7 +32,7 @@ The baseline model exhibited significant bias across protected attributes (espec
 
 ## Dataset
 
-This project uses the [Open University Learning Analytics Dataset (OULAD)](https://analyse.kmi.open.ac.uk/open_dataset).
+This project uses the [Open University Learning Analytics Dataset (OULAD)](https://analyse.kmi.open.ac.uk/open-dataset).
 
 **To obtain the data:**
 1. Download from the link above
