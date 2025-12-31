@@ -124,7 +124,9 @@ quarto render reports/final_summary_report.qmd --to html
 
 ## License
 
-This project is for educational/research purposes. The OULAD dataset is provided under CC-BY 4.0.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+The OULAD dataset is provided under CC-BY 4.0.
 
 ## Citation
 
