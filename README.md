@@ -47,6 +47,11 @@ Required files:
 - `vle.csv`
 - `courses.csv`
 
+## Requirements
+
+- Python 3.12.6+
+- See `requirements.txt` for package dependencies
+
 ## Installation
 
 ```bash
@@ -54,13 +59,15 @@ Required files:
 git clone https://github.com/baker-jr-john/bias-aware-ews.git
 cd bias-aware-ews
 
-# Create virtual environment
-python -m venv venv
+# Create virtual environment (requires Python 3.12+)
+python3.12 -m venv venv
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
 # Install dependencies
 pip install -r requirements.txt
 ```
+
+> **Note:** If using [pyenv](https://github.com/pyenv/pyenv), the `.python-version` file will automatically select the correct Python version.
 
 ## Notebooks
 
