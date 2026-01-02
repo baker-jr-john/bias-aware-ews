@@ -4,13 +4,14 @@ A machine learning system for early identification of at-risk students that addr
 
 ## Key Results
 
-| Metric | Value |
-|--------|-------|
-| **Model Performance (AUC)** | 0.889 |
-| **Prediction Timing** | First 25% of course |
-| **Fairness Target** | Maintained after mitigation |
+| Metric | Target | Achieved |
+|--------|--------|----------|
+| **Model Performance (AUC)** | > 0.80 | **0.889** |
+| **Early Prediction** | First 25% of course | **10 weeks** (~26% of 33–38 week courses) |
+| **Bias Mitigation** | Reduce disparities | **All 4 attributes improved** |
+| **Intersectional Fairness** | No critical issues | **Validated across 16 subgroups** |
 
-The baseline model exhibited significant bias across protected attributes (especially region), which was successfully mitigated using IBM AIF360 techniques while preserving predictive accuracy.
+The baseline model exhibited significant bias across protected attributes (especially region, with 4/4 fairness metrics violated), which was successfully mitigated using IBM AIF360 techniques while preserving predictive accuracy.
 
 ## Research Questions
 
@@ -84,7 +85,7 @@ Run in order:
 | `07_bias_mitigation_disability.ipynb` | Disability fairness mitigation |
 | `08_bias_mitigation_age.ipynb` | Age band fairness mitigation |
 | `09_intersectional_analysis.ipynb` | Intersectional fairness validation |
-| `10_final_summary_report.ipynb` | Results summary |
+| `10_final_summary_report.ipynb` | Comprehensive report with methodology, results, and limitations |
 
 ## Model Architecture
 
@@ -94,6 +95,8 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 - **Static branch**: Dense layer (32 units) for demographic features
 - **Fusion**: Concatenation → Dense(32) → Dropout → Sigmoid
 - **Parameters**: 21,793
+
+**Why 10 weeks?** This represents ~25% of course completion (courses are 33–38 weeks), balancing early intervention capability with sufficient behavioral signal. Students flagged at week 10 still have 75% of the course remaining to improve.
 
 ## Fairness Analysis
 
@@ -106,8 +109,8 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 - ABROCA (AUC disparity)
 
 **Mitigation approaches:**
-- Reweighting (pre-processing)
-- Threshold Optimization (post-processing)
+- Reweighting (pre-processing) — best for underrepresented groups (disability: 9% of data)
+- Threshold Optimization (post-processing) — best for well-represented groups (region, IMD, age)
 - Reject Option Classification (post-processing)
 
 ## Results Summary
@@ -119,6 +122,22 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 | IMD Band | Unfair (2/4) | Threshold Optimization | 0.889 |
 | Disability | Unfair (2/4) | Reweighting | 0.887 |
 | Age Band | Unfair (2/4) | Threshold Optimization | 0.889 |
+
+## Key Findings
+
+- **Regional bias was most severe:** Students in Scotland, Wales, and London were flagged at higher rates than equally-at-risk students in Ireland and Southern England
+- **Mitigation approach depends on group size:** Threshold optimization works for well-represented groups; reweighting is needed for minorities
+- **Intersectional disparities reflect real risk:** The 0.266 range in selection rates across subgroups mirrors actual at-risk rate variation, not discrimination
+- **All mitigations preserved performance:** AUC remained ≥0.887 after bias reduction
+
+## Limitations
+
+- **Single institution:** Results from UK distance learning may not generalize to traditional universities
+- **Historical data:** OULAD covers 2013–2014; student behaviors have evolved
+- **Unmeasured factors:** Employment, health, and family circumstances affect outcomes but aren't captured
+- **Prediction window trade-off:** Earlier predictions have less data; later predictions reduce intervention time
+
+See the [final summary report](notebooks/10_final_summary_report.ipynb) for detailed discussion.
 
 ## License
 
