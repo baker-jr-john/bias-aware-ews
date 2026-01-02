@@ -150,6 +150,15 @@ The OULAD dataset is provided under CC-BY 4.0.
 If you use this work, please cite:
 
 ```
+Baker, J. (2025). Bias-Aware Early Warning System for Higher Education.
+GitHub repository: https://github.com/baker-jr-john/bias-aware-ews
+```
+
+### Data Attribution
+
+This project uses the Open University Learning Analytics Dataset:
+
+```
 Kuzilek, J., Hlosta, M., & Zdrahal, Z. (2017). Open University Learning Analytics Dataset.
 Scientific Data, 4, 170171. https://doi.org/10.1038/sdata.2017.171
 ```
