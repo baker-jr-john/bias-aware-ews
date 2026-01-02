@@ -150,7 +150,7 @@ The OULAD dataset is provided under CC-BY 4.0.
 If you use this work, please cite:
 
 ```
-Baker, J. (2025). Bias-Aware Early Warning System for Higher Education.
+Baker, J. (2026). Bias-Aware Early Warning System for Higher Education.
 GitHub repository: https://github.com/baker-jr-john/bias-aware-ews
 ```
 
