@@ -137,7 +137,7 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 - **Unmeasured factors:** Employment, health, and family circumstances affect outcomes but aren't captured
 - **Prediction window trade-off:** Earlier predictions have less data; later predictions reduce intervention time
 
-See the [final summary report](notebooks/10_final_summary_report.ipynb) for detailed discussion.
+See the [final summary report](https://johnbaker.io/bias-aware-ews/) for detailed discussion.
 
 ## License
 
