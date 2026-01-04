@@ -177,8 +177,7 @@ report_text = f"""
 
 **Protected Attributes:**
 
-""" 
-# ^ Note the extra newlines above to separate the header from the list
+"""
 
 # 3. Loop to add bullet points
 for attr in ['gender', 'region', 'imd_band_imputed', 'age_band', 'disability']:
@@ -268,7 +267,7 @@ plt.show()
 
 ### Early Prediction Window
 
-A key design decision was **when** to make predictions. We chose a **10-week observation window**, representing approximately the **first 25% of course completion**:
+A key design decision was *when* to make predictions. We chose a **10-week observation window**, representing approximately the **first 25% of course completion**:
 
 | Course Length | 25% Window | Our Window | Coverage |
 |---------------|------------|------------|----------|
@@ -394,8 +393,8 @@ We conducted a comprehensive fairness audit using four metrics:
 
 - **Statistical Parity Difference (SPD):** Difference in selection rates between groups
 - **Equal Opportunity Difference (EOD):** Difference in true positive rates (sensitivity) between groups
-- **Equalized Odds:** Combined difference in TPR and FPR between groups
-- **ABROCA:** Absolute Between-ROC Area (difference in the Area Under the Curve, or AUC, between groups)
+- **Equalized Odds:** Combined difference in True Positive Rate (TPR) and False Positive Rate (FPR) between groups
+- **ABROCA:** Absolute Between-ROC (Receiver Operating Characteristic) Area (difference in the Area Under the Curve, or AUC, between groups)
 
 ### What Do These Thresholds Mean for Students?
 
@@ -433,7 +432,7 @@ Before mitigation, our model's region bias meant:
 
 - In high-risk regions: 46.5% of students flagged as at-risk
 - In low-risk regions: 38.6% of students flagged as at-risk
-- Gap: 7.9 percentage points (within threshold, but True Positive Rate, or TPR, differed by 18.3%)
+- Gap: 7.9 percentage points (within threshold, TPR differed by 18.3%)
 
 This regional bias meant students in Scotland, Wales, and London were more likely to receive early interventions than equally at-risk students in Ireland or Southern England.
 
@@ -692,7 +691,7 @@ display(Markdown(table_md))
 #### Why Reweighting works better for Disability:
 
 - Students with disabilities represent only 9% of the dataset
-- The baseline model learned less robust patterns for this minority group (higher False Positive Rate, or FPR: 0.178 vs 0.105)
+- The baseline model learned less robust patterns for this minority group (higher FPR: 0.178 vs 0.105)
 - Reweighting assigns higher importance to minority samples during training, forcing the model to learn better representations
 - Although it slightly reduces AUC (0.889 → 0.887), it achieves substantially better Equalized Odds (0.027 vs 0.051)
 - The trade-off is worthwhile: a 0.2% AUC reduction for a 48% improvement in fairness.
@@ -917,19 +916,19 @@ The model slightly *under-predicts* risk for both extremes, which is conservativ
 
 ### Recommendations
 
-**For Deployment:**
+#### For Deployment:
 
 - Use Threshold Optimization for Region, IMD Band, and Age Band
 - Use the Reweighted model for Disability fairness
 - Apply group-specific thresholds at prediction time
 
-**For Institutions:**
+#### For Institutions:
 
 - Monitor fairness metrics continuously after deployment
 - Collect feedback on intervention effectiveness by demographic group
 - Consider socioeconomic support alongside academic interventions
 
-**For Future Research:**
+#### For Future Research:
 
 - Explore in-processing fairness constraints (adversarial debiasing)
 - Investigate causal fairness approaches
@@ -964,7 +963,7 @@ The choice to predict within the first 25% of course completion (approximately 1
 
 The LSTM model relies on observable learning platform behaviors and demographic data. It cannot account for:
 
-**External life factors:**
+#### External life factors:
 
 - Employment changes, job loss, or increased work hours
 - Family responsibilities (caregiving, childcare)
@@ -972,7 +971,7 @@ The LSTM model relies on observable learning platform behaviors and demographic 
 - Financial hardship beyond what IMD captures
 - Housing instability or relocation
 
-**Unmeasured academic factors:**
+#### Unmeasured academic factors:
 
 - Quality of learning (vs. quantity of clicks)
 - Peer support networks and study groups
@@ -980,7 +979,7 @@ The LSTM model relies on observable learning platform behaviors and demographic 
 - Motivation and self-efficacy
 - Course-specific difficulty mismatches
 
-**Institutional factors:**
+#### Institutional factors:
 
 - Quality of course materials and instruction
 - Tutor responsiveness and support

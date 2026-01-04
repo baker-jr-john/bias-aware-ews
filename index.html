@@ -324,18 +324,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ss">**Protected Attributes:**</span></span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span> </span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ^ Note the extra newlines above to separate the header from the list</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Loop to add bullet points</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> attr <span class="kw">in</span> [<span class="st">'gender'</span>, <span class="st">'region'</span>, <span class="st">'imd_band_imputed'</span>, <span class="st">'age_band'</span>, <span class="st">'disability'</span>]:</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> attr <span class="kw">in</span> static_df.columns:</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> static_df[attr].nunique()</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        clean_name <span class="op">=</span> attr.replace(<span class="st">'_'</span>, <span class="st">' '</span>).title().replace(<span class="st">'Imd'</span>, <span class="st">'IMD'</span>)</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add the bullet point with a newline at the end</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        report_text <span class="op">+=</span> <span class="ss">f"* **</span><span class="sc">{</span>clean_name<span class="sc">}</span><span class="ss">:** </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss"> groups</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>display(Markdown(report_text))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Loop to add bullet points</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> attr <span class="kw">in</span> [<span class="st">'gender'</span>, <span class="st">'region'</span>, <span class="st">'imd_band_imputed'</span>, <span class="st">'age_band'</span>, <span class="st">'disability'</span>]:</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> attr <span class="kw">in</span> static_df.columns:</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> static_df[attr].nunique()</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        clean_name <span class="op">=</span> attr.replace(<span class="st">'_'</span>, <span class="st">' '</span>).title().replace(<span class="st">'Imd'</span>, <span class="st">'IMD'</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add the bullet point with a newline at the end</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        report_text <span class="op">+=</span> <span class="ss">f"* **</span><span class="sc">{</span>clean_name<span class="sc">}</span><span class="ss">:** </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss"> groups</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>display(Markdown(report_text))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <p><strong>Dataset Statistics:</strong></p>
 <ul>
@@ -445,7 +444,7 @@ Figure&nbsp;1: At-risk rates across protected attributes
 <h2 class="anchored" data-anchor-id="model-architecture-and-performance">Model Architecture and Performance</h2>
 <section id="early-prediction-window" class="level3">
 <h3 class="anchored" data-anchor-id="early-prediction-window">Early Prediction Window</h3>
-<p>A key design decision was <strong>when</strong> to make predictions. We chose a <strong>10-week observation window</strong>, representing approximately the <strong>first 25% of course completion</strong>:</p>
+<p>A key design decision was <em>when</em> to make predictions. We chose a <strong>10-week observation window</strong>, representing approximately the <strong>first 25% of course completion</strong>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 30%">
@@ -668,8 +667,8 @@ Figure&nbsp;3: Model performance metrics: ROC curve, Precision-Recall curve, and
 <ul>
 <li><strong>Statistical Parity Difference (SPD):</strong> Difference in selection rates between groups</li>
 <li><strong>Equal Opportunity Difference (EOD):</strong> Difference in true positive rates (sensitivity) between groups</li>
-<li><strong>Equalized Odds:</strong> Combined difference in TPR and FPR between groups</li>
-<li><strong>ABROCA:</strong> Absolute Between-ROC Area (difference in the Area Under the Curve, or AUC, between groups)</li>
+<li><strong>Equalized Odds:</strong> Combined difference in True Positive Rate (TPR) and False Positive Rate (FPR) between groups</li>
+<li><strong>ABROCA:</strong> Absolute Between-ROC (Receiver Operating Characteristic) Area (difference in the Area Under the Curve, or AUC, between groups)</li>
 </ul>
 <section id="what-do-these-thresholds-mean-for-students" class="level3">
 <h3 class="anchored" data-anchor-id="what-do-these-thresholds-mean-for-students">What Do These Thresholds Mean for Students?</h3>
@@ -733,7 +732,7 @@ Figure&nbsp;3: Model performance metrics: ROC curve, Precision-Recall curve, and
 <ul>
 <li>In high-risk regions: 46.5% of students flagged as at-risk</li>
 <li>In low-risk regions: 38.6% of students flagged as at-risk</li>
-<li>Gap: 7.9 percentage points (within threshold, but True Positive Rate, or TPR, differed by 18.3%)</li>
+<li>Gap: 7.9 percentage points (within threshold, TPR differed by 18.3%)</li>
 </ul>
 <p>This regional bias meant students in Scotland, Wales, and London were more likely to receive early interventions than equally at-risk students in Ireland or Southern England.</p>
 <details class="code-fold">
@@ -1213,7 +1212,7 @@ Table&nbsp;4: Mitigation Summary
 <h4 class="anchored" data-anchor-id="why-reweighting-works-better-for-disability">Why Reweighting works better for Disability:</h4>
 <ul>
 <li>Students with disabilities represent only 9% of the dataset</li>
-<li>The baseline model learned less robust patterns for this minority group (higher False Positive Rate, or FPR: 0.178 vs 0.105)</li>
+<li>The baseline model learned less robust patterns for this minority group (higher FPR: 0.178 vs 0.105)</li>
 <li>Reweighting assigns higher importance to minority samples during training, forcing the model to learn better representations</li>
 <li>Although it slightly reduces AUC (0.889 → 0.887), it achieves substantially better Equalized Odds (0.027 vs 0.051)</li>
 <li>The trade-off is worthwhile: a 0.2% AUC reduction for a 48% improvement in fairness.</li>
@@ -1601,24 +1600,30 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 </section>
 <section id="recommendations" class="level3">
 <h3 class="anchored" data-anchor-id="recommendations">Recommendations</h3>
-<p><strong>For Deployment:</strong></p>
+<section id="for-deployment" class="level4">
+<h4 class="anchored" data-anchor-id="for-deployment">For Deployment:</h4>
 <ul>
 <li>Use Threshold Optimization for Region, IMD Band, and Age Band</li>
 <li>Use the Reweighted model for Disability fairness</li>
 <li>Apply group-specific thresholds at prediction time</li>
 </ul>
-<p><strong>For Institutions:</strong></p>
+</section>
+<section id="for-institutions" class="level4">
+<h4 class="anchored" data-anchor-id="for-institutions">For Institutions:</h4>
 <ul>
 <li>Monitor fairness metrics continuously after deployment</li>
 <li>Collect feedback on intervention effectiveness by demographic group</li>
 <li>Consider socioeconomic support alongside academic interventions</li>
 </ul>
-<p><strong>For Future Research:</strong></p>
+</section>
+<section id="for-future-research" class="level4">
+<h4 class="anchored" data-anchor-id="for-future-research">For Future Research:</h4>
 <ul>
 <li>Explore in-processing fairness constraints (adversarial debiasing)</li>
 <li>Investigate causal fairness approaches</li>
 <li>Validate on additional institutions and student populations</li>
 </ul>
+</section>
 </section>
 </section>
 <section id="limitations" class="level2">
@@ -1671,7 +1676,8 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 <section id="what-the-model-does-not-capture" class="level3">
 <h3 class="anchored" data-anchor-id="what-the-model-does-not-capture">What the Model Does Not Capture</h3>
 <p>The LSTM model relies on observable learning platform behaviors and demographic data. It cannot account for:</p>
-<p><strong>External life factors:</strong></p>
+<section id="external-life-factors" class="level4">
+<h4 class="anchored" data-anchor-id="external-life-factors">External life factors:</h4>
 <ul>
 <li>Employment changes, job loss, or increased work hours</li>
 <li>Family responsibilities (caregiving, childcare)</li>
@@ -1679,7 +1685,9 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 <li>Financial hardship beyond what IMD captures</li>
 <li>Housing instability or relocation</li>
 </ul>
-<p><strong>Unmeasured academic factors:</strong></p>
+</section>
+<section id="unmeasured-academic-factors" class="level4">
+<h4 class="anchored" data-anchor-id="unmeasured-academic-factors">Unmeasured academic factors:</h4>
 <ul>
 <li>Quality of learning (vs.&nbsp;quantity of clicks)</li>
 <li>Peer support networks and study groups</li>
@@ -1687,13 +1695,16 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 <li>Motivation and self-efficacy</li>
 <li>Course-specific difficulty mismatches</li>
 </ul>
-<p><strong>Institutional factors:</strong></p>
+</section>
+<section id="institutional-factors" class="level4">
+<h4 class="anchored" data-anchor-id="institutional-factors">Institutional factors:</h4>
 <ul>
 <li>Quality of course materials and instruction</li>
 <li>Tutor responsiveness and support</li>
 <li>Technical barriers to platform access</li>
 <li>Changes in course structure mid-presentation</li>
 </ul>
+</section>
 </section>
 <section id="fairness-limitations" class="level3">
 <h3 class="anchored" data-anchor-id="fairness-limitations">Fairness Limitations</h3>
