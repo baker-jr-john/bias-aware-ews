@@ -8,7 +8,7 @@ format:
   html:
     title: Bias-Aware Early Warning System for Higher Education
     subtitle: Final Summary Report
-    date: '2026-01-02'
+    date: '2026-01-04'
     date-format: long
     author: 
       - name: John Baker
@@ -103,11 +103,9 @@ plt.style.use('seaborn-v0_8-whitegrid')
 plt.rcParams['figure.figsize'] = (12, 6)
 plt.rcParams['font.size'] = 11
 
-DATA_DIR = Path("../data/processed")
-FIGURES_DIR = Path("../figures")
+DATA_DIR = Path("data/processed")
+FIGURES_DIR = Path("figures")
 FIGURES_DIR.mkdir(exist_ok=True)
-REPORTS_DIR = Path(".")
-REPORTS_DIR.mkdir(exist_ok=True)
 
 # Load all results
 with open(DATA_DIR / 'fairness_results.json', 'r') as f:
@@ -832,7 +830,7 @@ ax.set_title('Selection Rate Disparity\nby Intersectional Group')
 ax.legend(loc='lower right', fontsize=8)
 
 plt.tight_layout()
-plt.savefig(REPORTS_DIR / 'summary_intersectional_disparities.png', dpi=150, bbox_inches='tight')
+plt.savefig('summary_intersectional_disparities.png', dpi=150, bbox_inches='tight')
 plt.show()
 ```
 
@@ -1033,14 +1031,14 @@ md_output = ""
 
 # 1. Notebooks
 md_output += "**Notebooks:**\n\n"
-notebooks = sorted(Path('../notebooks').glob('*.ipynb'))
+notebooks = sorted(Path('notebooks').glob('*.ipynb'))
 for nb in notebooks:
     md_output += f"* {nb.name}\n"
 md_output += "\n"
 
 # 2. Models (with size)
 md_output += "**Models:**\n\n"
-models = sorted(Path('../models').glob('*.pt'))
+models = sorted(Path('models').glob('*.pt'))
 for model in models:
     size_kb = model.stat().st_size / 1024
     md_output += f"* {model.name} ({size_kb:.1f} KB)\n"

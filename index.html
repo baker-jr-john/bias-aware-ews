@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="John Baker">
-<meta name="dcterms.date" content="2026-01-02">
+<meta name="dcterms.date" content="2026-01-04">
 
 <title>Bias-Aware Early Warning System for Higher Education</title>
 <style>
@@ -60,18 +60,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="final_summary_report_files/libs/clipboard/clipboard.min.js"></script>
-<script src="final_summary_report_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="final_summary_report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="final_summary_report_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="final_summary_report_files/libs/quarto-html/popper.min.js"></script>
-<script src="final_summary_report_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="final_summary_report_files/libs/quarto-html/anchor.min.js"></script>
-<link href="final_summary_report_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="final_summary_report_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="final_summary_report_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="final_summary_report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="final_summary_report_files/libs/bootstrap/bootstrap-7e6083fab22102ff398964aedbb65fba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="index_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="index_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap-7e6083fab22102ff398964aedbb65fba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -159,7 +159,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 2, 2026</p>
+      <p class="date">January 4, 2026</p>
     </div>
   </div>
   
@@ -253,33 +253,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">6</span>)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.size'</span>] <span class="op">=</span> <span class="dv">11</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"../data/processed"</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR <span class="op">=</span> Path(<span class="st">"../figures"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"data/processed"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR <span class="op">=</span> Path(<span class="st">"figures"</span>)</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>REPORTS_DIR <span class="op">=</span> Path(<span class="st">"."</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>REPORTS_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Load all results</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'fairness_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    fairness_results <span class="op">=</span> json.load(f)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_region.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    mitigation_region <span class="op">=</span> json.load(f)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_imd.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    mitigation_imd <span class="op">=</span> json.load(f)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_disability.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    mitigation_disability <span class="op">=</span> json.load(f)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_age.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    mitigation_age <span class="op">=</span> json.load(f)</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'intersectional_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    intersectional_results <span class="op">=</span> json.load(f)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'predictions_baseline.csv'</span>)</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>static_df <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'features_static.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Load all results</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'fairness_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    fairness_results <span class="op">=</span> json.load(f)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_region.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    mitigation_region <span class="op">=</span> json.load(f)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_imd.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    mitigation_imd <span class="op">=</span> json.load(f)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_disability.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    mitigation_disability <span class="op">=</span> json.load(f)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_age.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    mitigation_age <span class="op">=</span> json.load(f)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'intersectional_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    intersectional_results <span class="op">=</span> json.load(f)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'predictions_baseline.csv'</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>static_df <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'features_static.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div style="page-break-after: always;"></div>
@@ -433,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-atrisk-by-attribute" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-atrisk-by-attribute-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="final_summary_report_files/figure-html/fig-atrisk-by-attribute-output-1.png" width="1428" height="947" class="figure-img">
+<img src="index_files/figure-html/fig-atrisk-by-attribute-output-1.png" width="1428" height="947" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-atrisk-by-attribute-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: At-risk rates across protected attributes
@@ -653,7 +651,7 @@ Table&nbsp;1: Model Performance
 <div id="fig-model-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-model-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="final_summary_report_files/figure-html/fig-model-performance-output-1.png" width="1417" height="419" class="figure-img">
+<img src="index_files/figure-html/fig-model-performance-output-1.png" width="1417" height="419" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Model performance metrics: ROC curve, Precision-Recall curve, and Confusion Matrix
@@ -907,7 +905,7 @@ Table&nbsp;2: Fairness Audit Results
 <div id="fig-fairness-audit" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fairness-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="final_summary_report_files/figure-html/fig-fairness-audit-output-1.png" width="1332" height="466" class="figure-img">
+<img src="index_files/figure-html/fig-fairness-audit-output-1.png" width="1332" height="466" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fairness-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Fairness audit results showing disparities and violations by attribute
@@ -1084,7 +1082,7 @@ Table&nbsp;3: Bias Mitigation Results
 <div id="fig-mitigation-results" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="final_summary_report_files/figure-html/fig-mitigation-results-output-1.png" width="1428" height="467" class="figure-img">
+<img src="index_files/figure-html/fig-mitigation-results-output-1.png" width="1428" height="467" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: Comparison of baseline and mitigated model performance across attributes
@@ -1432,14 +1430,14 @@ Table&nbsp;4: Mitigation Summary
 <span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">'lower right'</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
 <span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>plt.savefig(REPORTS_DIR <span class="op">/</span> <span class="st">'summary_intersectional_disparities.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'summary_intersectional_disparities.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
 <span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-intersectional-disparities" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-intersectional-disparities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="final_summary_report_files/figure-html/fig-intersectional-disparities-output-1.png" width="1332" height="561" class="figure-img">
+<img src="index_files/figure-html/fig-intersectional-disparities-output-1.png" width="1332" height="561" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intersectional-disparities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Selection rate disparities across intersectional groups
@@ -1741,14 +1739,14 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Notebooks</span></span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Notebooks:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>notebooks <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'../notebooks'</span>).glob(<span class="st">'*.ipynb'</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>notebooks <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'notebooks'</span>).glob(<span class="st">'*.ipynb'</span>))</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nb <span class="kw">in</span> notebooks:</span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>nb<span class="sc">.</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Models (with size)</span></span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Models:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'../models'</span>).glob(<span class="st">'*.pt'</span>))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'models'</span>).glob(<span class="st">'*.pt'</span>))</span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> model <span class="kw">in</span> models:</span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    size_kb <span class="op">=</span> model.stat().st_size <span class="op">/</span> <span class="dv">1024</span></span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>model<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>size_kb<span class="sc">:.1f}</span><span class="ss"> KB)</span><span class="ch">\n</span><span class="ss">"</span></span>
@@ -1809,18 +1807,7 @@ Figure&nbsp;6: Selection rate disparities across intersectional groups
 </ul>
 <p><strong>Figures:</strong></p>
 <ul>
-<li>age_mitigation_comparison.png</li>
-<li>disability_mitigation_comparison.png</li>
-<li>imd_mitigation_comparison.png</li>
-<li>intersectional_gender_region.png</li>
-<li>intersectional_heatmap.png</li>
-<li>intersectional_imd_disability.png</li>
-<li>intersectional_region_disability.png</li>
-<li>intersectional_region_imd.png</li>
-<li>summary_atrisk_by_attribute.png</li>
-<li>summary_fairness_audit.png</li>
-<li>summary_mitigation_results.png</li>
-<li>summary_model_performance.png</li>
+<li>architecture.png</li>
 </ul>
 </div></section></div></main>
 <!-- /main column -->
