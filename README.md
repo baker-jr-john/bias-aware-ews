@@ -125,7 +125,7 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 
 ## Key Findings
 
-- **Regional bias was most severe:** Students in Scotland, Wales, and London were flagged at higher rates than equally-at-risk students in Ireland and Southern England
+- **Regional bias was most severe:** Students in Scotland, Wales, and London were flagged at higher rates than equally at-risk students in Ireland and Southern England
 - **Mitigation approach depends on group size:** Threshold optimization works for well-represented groups; reweighting is needed for minorities
 - **Intersectional disparities reflect real risk:** The 0.266 range in selection rates across subgroups mirrors actual at-risk rate variation, not discrimination
 - **All mitigations preserved performance:** AUC remained ≥0.887 after bias reduction
@@ -137,21 +137,20 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 - **Unmeasured factors:** Employment, health, and family circumstances affect outcomes but aren't captured
 - **Prediction window trade-off:** Earlier predictions have less data; later predictions reduce intervention time
 
-See the [final summary report](https://johnbaker.io/bias-aware-ews/) for detailed discussion.
+See the [final summary report](https://johnbaker.io/bias-aware-ews/) for a detailed discussion.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-The OULAD dataset is provided under CC-BY 4.0.
+The OULAD dataset is provided under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
 
 ## Citation
 
 If you use this work, please cite:
 
 ```
-Baker, J. (2026). Bias-Aware Early Warning System for Higher Education.
-GitHub repository: https://github.com/baker-jr-john/bias-aware-ews
+Baker, J. (2026). Bias-Aware Early Warning System for Higher Education. GitHub repository: https://github.com/baker-jr-john/bias-aware-ews
 ```
 
 ### Data Attribution
@@ -159,6 +158,5 @@ GitHub repository: https://github.com/baker-jr-john/bias-aware-ews
 This project uses the Open University Learning Analytics Dataset:
 
 ```
-Kuzilek, J., Hlosta, M., & Zdrahal, Z. (2017). Open University Learning Analytics Dataset.
-Scientific Data, 4, 170171. https://doi.org/10.1038/sdata.2017.171
+Kuzilek J., Hlosta M., Zdrahal Z. Open University Learning Analytics dataset Sci. Data 4:170171 doi: 10.1038/sdata.2017.171 (2017).
 ```
