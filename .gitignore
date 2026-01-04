@@ -30,10 +30,6 @@ env/
 data/raw/
 
 # Quarto render outputs
-reports/*.html
-reports/*.pdf
-reports/*.docx
-reports/*_files/
 .quarto/
 
 # Misc
@@ -47,4 +43,3 @@ CLAUDE.md
 # Local files (not tracked)
 docs/reference/
 docs/John_Baker_Writing_Assign4_EWS_capstone_proposal_v3_OULAD.docx
-reports/

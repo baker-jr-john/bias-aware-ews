@@ -1,0 +1,10 @@
+project:
+  type: default
+
+jupyter:
+  kernelspec:
+    display_name: "Python 3.12"
+    language: "python"
+    name: "python3"
+  cmd: ["/Users/john/.pyenv/versions/3.12.6/bin/python3", "-m", "ipykernel_launcher", "-f", "{connection_file}"]
+

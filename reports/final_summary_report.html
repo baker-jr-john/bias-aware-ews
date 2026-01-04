@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="John Baker">
+<meta name="dcterms.date" content="2026-01-02">
+
+<title>Bias-Aware Early Warning System for Higher Education</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="final_summary_report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="final_summary_report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="final_summary_report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="final_summary_report_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="final_summary_report_files/libs/quarto-html/popper.min.js"></script>
+<script src="final_summary_report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="final_summary_report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="final_summary_report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="final_summary_report_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="final_summary_report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="final_summary_report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="final_summary_report_files/libs/bootstrap/bootstrap-7e6083fab22102ff398964aedbb65fba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link active" data-scroll-target="#executive-summary">Executive Summary</a>
+  <ul class="collapse">
+  <li><a href="#key-results" id="toc-key-results" class="nav-link" data-scroll-target="#key-results">Key Results</a></li>
+  <li><a href="#what-we-did" id="toc-what-we-did" class="nav-link" data-scroll-target="#what-we-did">What We Did</a></li>
+  <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">Key Findings</a></li>
+  <li><a href="#limitations-acknowledged" id="toc-limitations-acknowledged" class="nav-link" data-scroll-target="#limitations-acknowledged">Limitations Acknowledged</a></li>
+  </ul></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">Research Questions</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview">Dataset Overview</a></li>
+  <li><a href="#model-architecture-and-performance" id="toc-model-architecture-and-performance" class="nav-link" data-scroll-target="#model-architecture-and-performance">Model Architecture and Performance</a>
+  <ul class="collapse">
+  <li><a href="#early-prediction-window" id="toc-early-prediction-window" class="nav-link" data-scroll-target="#early-prediction-window">Early Prediction Window</a></li>
+  <li><a href="#architecture-diagram" id="toc-architecture-diagram" class="nav-link" data-scroll-target="#architecture-diagram">Architecture Diagram</a></li>
+  <li><a href="#performance-metrics" id="toc-performance-metrics" class="nav-link" data-scroll-target="#performance-metrics">Performance Metrics</a></li>
+  </ul></li>
+  <li><a href="#fairness-audit-results" id="toc-fairness-audit-results" class="nav-link" data-scroll-target="#fairness-audit-results">Fairness Audit Results</a>
+  <ul class="collapse">
+  <li><a href="#what-do-these-thresholds-mean-for-students" id="toc-what-do-these-thresholds-mean-for-students" class="nav-link" data-scroll-target="#what-do-these-thresholds-mean-for-students">What Do These Thresholds Mean for Students?</a></li>
+  </ul></li>
+  <li><a href="#bias-mitigation-results" id="toc-bias-mitigation-results" class="nav-link" data-scroll-target="#bias-mitigation-results">Bias Mitigation Results</a>
+  <ul class="collapse">
+  <li><a href="#mitigation-summary" id="toc-mitigation-summary" class="nav-link" data-scroll-target="#mitigation-summary">Mitigation Summary</a></li>
+  <li><a href="#why-different-approaches-work-for-different-attributes" id="toc-why-different-approaches-work-for-different-attributes" class="nav-link" data-scroll-target="#why-different-approaches-work-for-different-attributes">Why Different Approaches Work for Different Attributes</a></li>
+  </ul></li>
+  <li><a href="#intersectional-fairness-analysis" id="toc-intersectional-fairness-analysis" class="nav-link" data-scroll-target="#intersectional-fairness-analysis">Intersectional Fairness Analysis</a>
+  <ul class="collapse">
+  <li><a href="#interpreting-the-intersectional-findings" id="toc-interpreting-the-intersectional-findings" class="nav-link" data-scroll-target="#interpreting-the-intersectional-findings">Interpreting the Intersectional Findings</a></li>
+  </ul></li>
+  <li><a href="#key-findings-and-conclusions" id="toc-key-findings-and-conclusions" class="nav-link" data-scroll-target="#key-findings-and-conclusions">Key Findings and Conclusions</a>
+  <ul class="collapse">
+  <li><a href="#key-findings-1" id="toc-key-findings-1" class="nav-link" data-scroll-target="#key-findings-1">Key Findings</a></li>
+  <li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li>
+  </ul></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a>
+  <ul class="collapse">
+  <li><a href="#generalizability-beyond-oulad" id="toc-generalizability-beyond-oulad" class="nav-link" data-scroll-target="#generalizability-beyond-oulad">Generalizability Beyond OULAD</a></li>
+  <li><a href="#week-prediction-window-trade-offs" id="toc-week-prediction-window-trade-offs" class="nav-link" data-scroll-target="#week-prediction-window-trade-offs">10-Week Prediction Window Trade-offs</a></li>
+  <li><a href="#what-the-model-does-not-capture" id="toc-what-the-model-does-not-capture" class="nav-link" data-scroll-target="#what-the-model-does-not-capture">What the Model Does Not Capture</a></li>
+  <li><a href="#fairness-limitations" id="toc-fairness-limitations" class="nav-link" data-scroll-target="#fairness-limitations">Fairness Limitations</a></li>
+  <li><a href="#implications-for-deployment" id="toc-implications-for-deployment" class="nav-link" data-scroll-target="#implications-for-deployment">Implications for Deployment</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="final_summary_report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bias-Aware Early Warning System for Higher Education</h1>
+<p class="subtitle lead">Final Summary Report</p>
+</div>
+
+
+<div class="quarto-title-meta-author column-page-left">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">John Baker <a href="mailto:jbaker1@upenn.edu" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Pennsylvania Graduate School of Education
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta column-page-left">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="executive-summary" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="executive-summary">Executive Summary</h2>
+<p>This research project developed and evaluated a <strong>bias-aware Early Warning System (EWS)</strong> to identify at-risk students in higher education while addressing algorithmic fairness concerns. Using the Open University Learning Analytics Dataset (OULAD), we built an LSTM-based temporal prediction model and systematically audited and mitigated algorithmic bias.</p>
+<section id="key-results" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="key-results">Key Results</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 27%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Objective</th>
+<th>Target</th>
+<th>Achieved</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Predictive Performance</td>
+<td>AUC &gt; 0.80</td>
+<td><strong>0.889</strong></td>
+</tr>
+<tr class="even">
+<td>Early Prediction</td>
+<td>First 25% of course</td>
+<td><strong>10 weeks</strong> (~26% of 33–38 week courses)</td>
+</tr>
+<tr class="odd">
+<td>Bias Mitigation</td>
+<td>Reduce disparities</td>
+<td><strong>All four attributes improved</strong></td>
+</tr>
+<tr class="even">
+<td>Intersectional Fairness</td>
+<td>No critical issues</td>
+<td><strong>Validated across 16 subgroups</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-we-did" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="what-we-did">What We Did</h3>
+<ol type="1">
+<li><p><strong>Built an early prediction model</strong> using a dual-branch LSTM architecture that combines 10 weeks of VLE engagement patterns with static demographic features, enabling intervention while 75% of the course remains</p></li>
+<li><p><strong>Audited fairness</strong> across five protected attributes using four metrics (SPD, EOD, Equalized Odds, ABROCA), finding significant disparities for region (4/4 violations), IMD band, disability, and age</p></li>
+<li><p><strong>Mitigated bias</strong> using attribute-appropriate techniques: threshold optimization for large groups (region, IMD, age) and reweighting for underrepresented groups (disability), reducing Equal Opportunity Difference to near-zero while maintaining AUC</p></li>
+<li><p><strong>Validated intersectional fairness</strong> across 16 demographic subgroups, confirming no severe compounding disparities and AUC &gt; 0.80 for all intersections</p></li>
+</ol>
+</section>
+<section id="key-findings" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="key-findings">Key Findings</h3>
+<ul>
+<li><strong>Regional bias was most severe:</strong> Students in Scotland, Wales, and London were flagged at higher rates than equally at-risk students in Ireland and Southern England</li>
+<li><strong>Mitigation approach matters:</strong> Post-processing (threshold optimization) works for well-represented groups; pre-processing (reweighting) is needed for minorities like students with disabilities (9% of data)</li>
+<li><strong>Selection rate disparities reflect real risk differences:</strong> The 0.266 range in intersectional selection rates mirror the underlying at-risk rate variation, not model discrimination</li>
+</ul>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="limitations-acknowledged" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="limitations-acknowledged">Limitations Acknowledged</h3>
+<p>This analysis is bounded by OULAD’s specific context (UK distance learning, 2013–2014 data), the 10-week prediction window trade-off, and unmeasured factors (employment, health, family circumstances) that influence student outcomes. The model should supplement—not replace—human judgment in student support decisions.</p>
+<div id="setup" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'TF_CPP_MIN_LOG_LEVEL'</span>] <span class="op">=</span> <span class="st">'2'</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">'seaborn-v0_8-whitegrid'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">6</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.size'</span>] <span class="op">=</span> <span class="dv">11</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">"../data/processed"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR <span class="op">=</span> Path(<span class="st">"../figures"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>FIGURES_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>REPORTS_DIR <span class="op">=</span> Path(<span class="st">"."</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>REPORTS_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Load all results</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'fairness_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    fairness_results <span class="op">=</span> json.load(f)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_region.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    mitigation_region <span class="op">=</span> json.load(f)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_imd.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    mitigation_imd <span class="op">=</span> json.load(f)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_disability.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    mitigation_disability <span class="op">=</span> json.load(f)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_age.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    mitigation_age <span class="op">=</span> json.load(f)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'intersectional_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    intersectional_results <span class="op">=</span> json.load(f)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'predictions_baseline.csv'</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>static_df <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'features_static.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+<section id="research-questions" class="level2">
+<h2 class="anchored" data-anchor-id="research-questions">Research Questions</h2>
+<p>This project addressed the following research questions:</p>
+<ol type="1">
+<li><p><strong>RQ1:</strong> How do socioeconomic, geographic, and demographic characteristics predict at-risk students in higher education?</p></li>
+<li><p><strong>RQ2:</strong> What is the extent of algorithmic bias across protected attributes (gender, region, relative poverty, age, disability) in temporal EWS models?</p></li>
+<li><p><strong>RQ3:</strong> What is the effectiveness of different bias mitigation approaches (pre-processing, post-processing) in reducing prediction disparities while maintaining strong predictive performance (AUC ROC &gt; 0.80)?</p></li>
+</ol>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p>The <strong><a href="https://analyse.kmi.open.ac.uk/open-dataset" class="external" target="_blank">Open University Learning Analytics Dataset (OULAD)</a></strong> contains data from 32,593 student enrollments across 22 course presentations.</p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display, Markdown</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Calculate values</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>total_students <span class="op">=</span> <span class="bu">len</span>(static_df)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>unique_courses <span class="op">=</span> static_df[<span class="st">'code_module'</span>].nunique()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>presentations <span class="op">=</span> (static_df[<span class="st">'code_module'</span>] <span class="op">+</span> <span class="st">'_'</span> <span class="op">+</span> static_df[<span class="st">'code_presentation'</span>]).nunique()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>at_risk <span class="op">=</span> static_df[<span class="st">'at_risk'</span>].<span class="bu">sum</span>()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>at_risk_pct <span class="op">=</span> static_df[<span class="st">'at_risk'</span>].mean() <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>not_at_risk <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> static_df[<span class="st">'at_risk'</span>]).<span class="bu">sum</span>()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>not_at_risk_pct <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> static_df[<span class="st">'at_risk'</span>].mean()) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build the string with explicit newlines</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>report_text <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">**Dataset Statistics:**</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="ss">* **Total student enrollments:** </span><span class="sc">{</span>total_students<span class="sc">:,}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="ss">* **Unique courses:** </span><span class="sc">{</span>unique_courses<span class="sc">}</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ss">* **Course presentations:** </span><span class="sc">{</span>presentations<span class="sc">}</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="ss">**Target Variable (At-Risk):**</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="ss">* **At-risk (1):** </span><span class="sc">{</span>at_risk<span class="sc">:,}</span><span class="ss"> (</span><span class="sc">{</span>at_risk_pct<span class="sc">:.1f}</span><span class="ss">%)</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ss">* **Not at-risk (0):** </span><span class="sc">{</span>not_at_risk<span class="sc">:,}</span><span class="ss"> (</span><span class="sc">{</span>not_at_risk_pct<span class="sc">:.1f}</span><span class="ss">%)</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="ss">**Protected Attributes:**</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span> </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ^ Note the extra newlines above to separate the header from the list</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Loop to add bullet points</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> attr <span class="kw">in</span> [<span class="st">'gender'</span>, <span class="st">'region'</span>, <span class="st">'imd_band_imputed'</span>, <span class="st">'age_band'</span>, <span class="st">'disability'</span>]:</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> attr <span class="kw">in</span> static_df.columns:</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        count <span class="op">=</span> static_df[attr].nunique()</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        clean_name <span class="op">=</span> attr.replace(<span class="st">'_'</span>, <span class="st">' '</span>).title().replace(<span class="st">'Imd'</span>, <span class="st">'IMD'</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add the bullet point with a newline at the end</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        report_text <span class="op">+=</span> <span class="ss">f"* **</span><span class="sc">{</span>clean_name<span class="sc">}</span><span class="ss">:** </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss"> groups</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>display(Markdown(report_text))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p><strong>Dataset Statistics:</strong></p>
+<ul>
+<li><strong>Total student enrollments:</strong> 32,593</li>
+<li><strong>Unique courses:</strong> 7</li>
+<li><strong>Course presentations:</strong> 22</li>
+</ul>
+<p><strong>Target Variable (At-Risk):</strong></p>
+<ul>
+<li><strong>At-risk (1):</strong> 17,208 (52.8%)</li>
+<li><strong>Not at-risk (0):</strong> 15,385 (47.2%)</li>
+</ul>
+<p><strong>Protected Attributes:</strong></p>
+<ul>
+<li><strong>Gender:</strong> 2 groups</li>
+<li><strong>Region:</strong> 13 groups</li>
+<li><strong>IMD Band Imputed:</strong> 10 groups</li>
+<li><strong>Age Band:</strong> 3 groups</li>
+<li><strong>Disability:</strong> 2 groups</li>
+</ul>
+<div id="cell-fig-atrisk-by-attribute" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>, <span class="dv">0</span>]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>gender_rates <span class="op">=</span> static_df.groupby(<span class="st">'gender'</span>)[<span class="st">'at_risk'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(gender_rates.index, gender_rates.values, color<span class="op">=</span>[<span class="st">'steelblue'</span>, <span class="st">'coral'</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'At-Risk Rate'</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'At-Risk Rate by Gender'</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">0.7</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bar <span class="kw">in</span> bars:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ax.text(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, bar.get_height() <span class="op">+</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f'</span><span class="sc">{</span>bar<span class="sc">.</span>get_height()<span class="sc">:.1%}</span><span class="ss">'</span>, ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Age</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>, <span class="dv">1</span>]</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>age_rates <span class="op">=</span> static_df.groupby(<span class="st">'age_band'</span>)[<span class="st">'at_risk'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(age_rates.index, age_rates.values, color<span class="op">=</span><span class="st">'steelblue'</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'At-Risk Rate'</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'At-Risk Rate by Age Band'</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">0.7</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Disability</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>, <span class="dv">2</span>]</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>disability_rates <span class="op">=</span> static_df.groupby(<span class="st">'disability'</span>)[<span class="st">'at_risk'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>disability_rates.index <span class="op">=</span> [<span class="st">'Has Disability'</span> <span class="cf">if</span> x <span class="op">==</span> <span class="st">'Y'</span> <span class="cf">else</span> <span class="st">'No Disability'</span> <span class="cf">for</span> x <span class="kw">in</span> disability_rates.index]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(disability_rates.index, disability_rates.values, color<span class="op">=</span>[<span class="st">'coral'</span>, <span class="st">'steelblue'</span>])</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'At-Risk Rate'</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'At-Risk Rate by Disability Status'</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">0.7</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bar <span class="kw">in</span> bars:</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    ax.text(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="dv">2</span>, bar.get_height() <span class="op">+</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f'</span><span class="sc">{</span>bar<span class="sc">.</span>get_height()<span class="sc">:.1%}</span><span class="ss">'</span>, ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Region</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>, <span class="dv">0</span>]</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>region_rates <span class="op">=</span> static_df.groupby(<span class="st">'region'</span>)[<span class="st">'at_risk'</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'coral'</span> <span class="cf">if</span> r <span class="op">&gt;=</span> <span class="fl">0.5</span> <span class="cf">else</span> <span class="st">'steelblue'</span> <span class="cf">for</span> r <span class="kw">in</span> region_rates.values]</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(region_rates.index, region_rates.values, color<span class="op">=</span>colors)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'At-Risk Rate'</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'At-Risk Rate by Region'</span>)</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="fl">0.5</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co"># IMD Band</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>, <span class="dv">1</span>]</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>imd_order <span class="op">=</span> [<span class="st">'0-10%'</span>, <span class="st">'10-20'</span>, <span class="st">'20-30%'</span>, <span class="st">'30-40%'</span>, <span class="st">'40-50%'</span>, <span class="st">'50-60%'</span>, <span class="st">'60-70%'</span>, <span class="st">'70-80%'</span>, <span class="st">'80-90%'</span>, <span class="st">'90-100%'</span>]</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>imd_rates <span class="op">=</span> static_df.groupby(<span class="st">'imd_band_imputed'</span>)[<span class="st">'at_risk'</span>].mean()</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>imd_rates <span class="op">=</span> imd_rates.reindex([x <span class="cf">for</span> x <span class="kw">in</span> imd_order <span class="cf">if</span> x <span class="kw">in</span> imd_rates.index])</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'coral'</span> <span class="cf">if</span> r <span class="op">&gt;=</span> <span class="fl">0.5</span> <span class="cf">else</span> <span class="st">'steelblue'</span> <span class="cf">for</span> r <span class="kw">in</span> imd_rates.values]</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(<span class="bu">range</span>(<span class="bu">len</span>(imd_rates)), imd_rates.values, color<span class="op">=</span>colors)</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(<span class="bu">range</span>(<span class="bu">len</span>(imd_rates)))</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(imd_rates.index, rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">'right'</span>)</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'At-Risk Rate'</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'At-Risk Rate by IMD Band (Deprivation)'</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="fl">0.5</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Legend</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>, <span class="dv">2</span>]</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="st">'IMD Band Interpretation:'</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>,</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        ha<span class="op">=</span><span class="st">'center'</span>, transform<span class="op">=</span>ax.transAxes)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.5</span>, <span class="fl">0.55</span>, <span class="st">'0-10% = Most deprived areas'</span>, fontsize<span class="op">=</span><span class="dv">11</span>, ha<span class="op">=</span><span class="st">'center'</span>, transform<span class="op">=</span>ax.transAxes)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.5</span>, <span class="fl">0.45</span>, <span class="st">'90-100% = Least deprived areas'</span>, fontsize<span class="op">=</span><span class="dv">11</span>, ha<span class="op">=</span><span class="st">'center'</span>, transform<span class="op">=</span>ax.transAxes)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="st">'Red bars indicate groups with'</span>, fontsize<span class="op">=</span><span class="dv">11</span>, ha<span class="op">=</span><span class="st">'center'</span>, transform<span class="op">=</span>ax.transAxes)</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="fl">0.5</span>, <span class="fl">0.15</span>, <span class="st">'at-risk rate &gt;= 50%'</span>, fontsize<span class="op">=</span><span class="dv">11</span>, ha<span class="op">=</span><span class="st">'center'</span>, transform<span class="op">=</span>ax.transAxes)</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>ax.axis(<span class="st">'off'</span>)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-atrisk-by-attribute" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-atrisk-by-attribute-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="final_summary_report_files/figure-html/fig-atrisk-by-attribute-output-1.png" width="1428" height="947" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-atrisk-by-attribute-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: At-risk rates across protected attributes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-architecture-and-performance" class="level2">
+<h2 class="anchored" data-anchor-id="model-architecture-and-performance">Model Architecture and Performance</h2>
+<section id="early-prediction-window" class="level3">
+<h3 class="anchored" data-anchor-id="early-prediction-window">Early Prediction Window</h3>
+<p>A key design decision was <strong>when</strong> to make predictions. We chose a <strong>10-week observation window</strong>, representing approximately the <strong>first 25% of course completion</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Course Length</th>
+<th>25% Window</th>
+<th>Our Window</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>234–269 days (33–38 weeks)</td>
+<td>58–67 days (8–10 weeks)</td>
+<td>70 days (10 weeks)</td>
+<td>~26%</td>
+</tr>
+</tbody>
+</table>
+<section id="rationale-for-10-weeks" class="level4">
+<h4 class="anchored" data-anchor-id="rationale-for-10-weeks">Rationale for 10 weeks:</h4>
+<ul>
+<li><strong>Early enough for intervention:</strong> Students flagged in week 10 still have 75% of the course remaining to improve</li>
+<li><strong>Sufficient behavioral signal:</strong> 10 weeks captures meaningful Virtual Learning Environment (VLE) engagement patterns (login frequency, resource access, assessment attempts)</li>
+<li><strong>Practical alignment:</strong> Matches typical institutional early-alert review periods</li>
+<li><strong>Trade-off accepted:</strong> Earlier predictions (e.g., week 4) would have less data; later predictions reduce intervention time</li>
+</ul>
+<p>We developed a <strong>dual-branch Long Short-Term Memory (LSTM) architecture</strong> that combines:</p>
+<ul>
+<li><strong>Temporal features:</strong> 10-week VLE engagement sequences (clicks, activity types)</li>
+<li><strong>Static features:</strong> Demographics, prior education, course registration timing</li>
+</ul>
+</section>
+</section>
+<section id="architecture-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="architecture-diagram">Architecture Diagram</h3>
+<div id="fig-architecture" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/architecture.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Dual-branch LSTM-Based EWS Model Architecture
+</figcaption>
+</figure>
+</div>
+<section id="training-configuration" class="level4">
+<h4 class="anchored" data-anchor-id="training-configuration">Training Configuration:</h4>
+<ul>
+<li>Data Split: 70% train | 15% validation | 15% test</li>
+<li>Batch Size: 256</li>
+<li>Optimizer: Adam (lr=0.001)</li>
+<li>Early Stopping: patience=5 (validation AUC)</li>
+<li>Random Seed: 42</li>
+</ul>
+</section>
+</section>
+<section id="performance-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="performance-metrics">Performance Metrics</h3>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc, precision_recall_curve, confusion_matrix</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Get predictions</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> predictions[<span class="st">'y_true'</span>].values</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> predictions[<span class="st">'y_pred_proba'</span>].values</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> predictions[<span class="st">'y_pred'</span>].values</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculate metrics</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>fpr, tpr, _ <span class="op">=</span> roc_curve(y_true, y_prob)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>precision, recall, _ <span class="op">=</span> precision_recall_curve(y_true, y_prob)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>pr_auc <span class="op">=</span> auc(recall, precision)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_true, y_pred)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>tn, fp, fn, tp <span class="op">=</span> cm.ravel()</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>precision_val <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>recall_val <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>f1 <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> precision_val <span class="op">*</span> recall_val <span class="op">/</span> (precision_val <span class="op">+</span> recall_val)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>specificity <span class="op">=</span> tn <span class="op">/</span> (tn <span class="op">+</span> fp)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Construct Markdown Table</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># We use f-strings to insert the calculated variables directly into the table rows.</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>markdown_table <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="ss">| Metric | Value | Target |</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="ss">|:-------|:-----:|:------:|</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="ss">| **AUC-ROC** | </span><span class="sc">{</span>roc_auc<span class="sc">:.4f}</span><span class="ss"> | &gt;0.80 ✓ |</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="ss">| **AUC-PR** | </span><span class="sc">{</span>pr_auc<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="ss">| **Accuracy** | </span><span class="sc">{</span>accuracy<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="ss">| **Precision** | </span><span class="sc">{</span>precision_val<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="ss">| **Recall (Sensitivity)** | </span><span class="sc">{</span>recall_val<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="ss">| **Specificity** | </span><span class="sc">{</span>specificity<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="ss">| **F1-Score** | </span><span class="sc">{</span>f1<span class="sc">:.4f}</span><span class="ss"> | |</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>display(Markdown(markdown_table))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-performance" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Model Performance
+</figcaption>
+<div aria-describedby="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Metric</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>AUC-ROC</strong></td>
+<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">&gt;0.80 ✓</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>AUC-PR</strong></td>
+<td style="text-align: center;">0.9187</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Accuracy</strong></td>
+<td style="text-align: center;">0.8126</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Precision</strong></td>
+<td style="text-align: center;">0.8824</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Recall (Sensitivity)</strong></td>
+<td style="text-align: center;">0.7443</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Specificity</strong></td>
+<td style="text-align: center;">0.8891</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>F1-Score</strong></td>
+<td style="text-align: center;">0.8075</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="cell-fig-model-performance" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="fl">4.5</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC Curve</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ax.plot(fpr, tpr, color<span class="op">=</span><span class="st">'steelblue'</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f'ROC curve (AUC = </span><span class="sc">{</span>roc_auc<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], color<span class="op">=</span><span class="st">'gray'</span>, lw<span class="op">=</span><span class="dv">1</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>ax.fill_between(fpr, tpr, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlim([<span class="fl">0.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>ax.set_ylim([<span class="fl">0.0</span>, <span class="fl">1.05</span>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'False Positive Rate'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'True Positive Rate'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Receiver Operating Characteristic (ROC)'</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">'lower right'</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Precision-Recall Curve</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>ax.plot(recall, precision, color<span class="op">=</span><span class="st">'coral'</span>, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f'PR curve (AUC = </span><span class="sc">{</span>pr_auc<span class="sc">:.3f}</span><span class="ss">)'</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span>y_true.mean(), color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="ss">f'Baseline (</span><span class="sc">{</span>y_true<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">)'</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>ax.fill_between(recall, precision, alpha<span class="op">=</span><span class="fl">0.3</span>, color<span class="op">=</span><span class="st">'coral'</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>ax.set_xlim([<span class="fl">0.0</span>, <span class="fl">1.0</span>])</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>ax.set_ylim([<span class="fl">0.0</span>, <span class="fl">1.05</span>])</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Recall'</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Precision'</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Precision-Recall Curve'</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">'lower left'</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Confusion Matrix</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">2</span>]</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>, ax<span class="op">=</span>ax,</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            xticklabels<span class="op">=</span>[<span class="st">'Not At-Risk'</span>, <span class="st">'At-Risk'</span>],</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>            yticklabels<span class="op">=</span>[<span class="st">'Not At-Risk'</span>, <span class="st">'At-Risk'</span>])</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Predicted'</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Actual'</span>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Confusion Matrix'</span>)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-model-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-model-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="final_summary_report_files/figure-html/fig-model-performance-output-1.png" width="1417" height="419" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-model-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Model performance metrics: ROC curve, Precision-Recall curve, and Confusion Matrix
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="fairness-audit-results" class="level2">
+<h2 class="anchored" data-anchor-id="fairness-audit-results">Fairness Audit Results</h2>
+<p>We conducted a comprehensive fairness audit using four metrics:</p>
+<ul>
+<li><strong>Statistical Parity Difference (SPD):</strong> Difference in selection rates between groups</li>
+<li><strong>Equal Opportunity Difference (EOD):</strong> Difference in true positive rates (sensitivity) between groups</li>
+<li><strong>Equalized Odds:</strong> Combined difference in TPR and FPR between groups</li>
+<li><strong>ABROCA:</strong> Absolute Between-ROC Area (difference in the Area Under the Curve, or AUC, between groups)</li>
+</ul>
+<section id="what-do-these-thresholds-mean-for-students" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-these-thresholds-mean-for-students">What Do These Thresholds Mean for Students?</h3>
+<p>We adopted thresholds of |SPD| &lt; 0.10, |EOD| &lt; 0.10, and ABROCA &lt; 0.03. However, what do these numbers mean in practice?</p>
+<section id="statistical-parity-spd-0.10" class="level4">
+<h4 class="anchored" data-anchor-id="statistical-parity-spd-0.10">Statistical Parity (SPD &lt; 0.10):</h4>
+<p>Of every 100 students in each group, no more than 10 additional students from one group should be flagged as at-risk compared to the other.</p>
+<ul>
+<li>If 45 out of 100 students without disabilities are flagged, then between 35 and 55 out of 100 students with disabilities should be flagged.</li>
+<li>Our baseline disability SPD of +0.124 means ~12 extra students with disabilities per 100 are flagged, exceeding our tolerance</li>
+<li><strong>Real impact:</strong> Students with disabilities disproportionately receive intervention outreach, which could be stigmatizing or resource-wasteful if they are false positives</li>
+</ul>
+</section>
+<section id="equal-opportunity-eod-0.10" class="level4">
+<h4 class="anchored" data-anchor-id="equal-opportunity-eod-0.10">Equal Opportunity (EOD &lt; 0.10):</h4>
+<p>Among students who actually fail/withdraw, the model should identify them at similar rates regardless of group membership.</p>
+<ul>
+<li>If the model catches 75% of truly at-risk students without disabilities, it should catch 65–85% of truly at-risk students with disabilities.</li>
+<li>Our baseline region EOD of +0.183 means we catch 18% more at-risk students in high-risk regions—sounds good, but it also means we are <em>missing</em> more at-risk students in low-risk regions.</li>
+<li><strong>Real impact:</strong> At-risk students in “low-risk” regions may not receive the support they need, while resources concentrate on “high-risk” regions</li>
+</ul>
+</section>
+<section id="why-0.10-as-the-threshold" class="level4">
+<h4 class="anchored" data-anchor-id="why-0.10-as-the-threshold">Why 0.10 as the threshold?</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 40%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Threshold</th>
+<th>Interpretation</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.05 (strict)</td>
+<td>Max 5 per 100 difference</td>
+<td>May be unachievable; sacrifices accuracy</td>
+</tr>
+<tr class="even">
+<td><strong>0.10 (adopted)</strong></td>
+<td>Max 10 per 100 difference</td>
+<td>Balances fairness with utility</td>
+</tr>
+<tr class="odd">
+<td>0.20 (lenient)</td>
+<td>Max 20 per 100 difference</td>
+<td>Permits substantial disparities</td>
+</tr>
+</tbody>
+</table>
+<p>The 0.10 threshold (sometimes called the “80% rule” or “four-fifths rule” in employment contexts) represents a common regulatory and research standard. It acknowledges that perfect parity is rarely achievable while still requiring meaningful equity.</p>
+</section>
+<section id="concrete-example-from-our-results" class="level4">
+<h4 class="anchored" data-anchor-id="concrete-example-from-our-results">Concrete example from our results:</h4>
+<p>Before mitigation, our model’s region bias meant:</p>
+<ul>
+<li>In high-risk regions: 46.5% of students flagged as at-risk</li>
+<li>In low-risk regions: 38.6% of students flagged as at-risk</li>
+<li>Gap: 7.9 percentage points (within threshold, but True Positive Rate, or TPR, differed by 18.3%)</li>
+</ul>
+<p>This regional bias meant students in Scotland, Wales, and London were more likely to receive early interventions than equally at-risk students in Ireland or Southern England.</p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Define thresholds</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>thresholds <span class="op">=</span> {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'SPD'</span>: <span class="fl">0.10</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'EOD'</span>: <span class="fl">0.10</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'EqOdds'</span>: <span class="fl">0.10</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ABROCA'</span>: <span class="fl">0.03</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Process the data</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>fairness_summary <span class="op">=</span> []</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> fairness_results[<span class="st">'summary'</span>]:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    attr <span class="op">=</span> item[<span class="st">'Attribute'</span>].replace(<span class="st">'_imputed'</span>, <span class="st">''</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    spd_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'SPD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'SPD'</span>]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    eod_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'EOD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'EOD'</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    eqodds_fair <span class="op">=</span> item[<span class="st">'EqOdds'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'EqOdds'</span>]</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    abroca_fair <span class="op">=</span> item[<span class="st">'ABROCA'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'ABROCA'</span>]</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    violations <span class="op">=</span> <span class="dv">4</span> <span class="op">-</span> <span class="bu">sum</span>([spd_fair, eod_fair, eqodds_fair, abroca_fair])</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    fairness_summary.append({</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Attribute'</span>: attr,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD'</span>: item[<span class="st">'SPD'</span>],</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD_Fair'</span>: spd_fair,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD'</span>: item[<span class="st">'EOD'</span>],</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD_Fair'</span>: eod_fair,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds'</span>: item[<span class="st">'EqOdds'</span>],</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds_Fair'</span>: eqodds_fair,</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA'</span>: item[<span class="st">'ABROCA'</span>],</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA_Fair'</span>: abroca_fair,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Violations'</span>: violations</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># --- CRITICAL RESTORATION: Create the DataFrame for the next plot ---</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>fairness_df <span class="op">=</span> pd.DataFrame(fairness_summary)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Build the Markdown Output</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Part A: The Thresholds Line (Text)</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">=</span> <span class="ss">f"**Thresholds:** |SPD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'SPD'</span>]<span class="sc">}</span><span class="ss">, |EOD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EOD'</span>]<span class="sc">}</span><span class="ss">, EqOdds &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EqOdds'</span>]<span class="sc">}</span><span class="ss">, ABROCA &lt; </span><span class="sc">{</span>thresholds[<span class="st">'ABROCA'</span>]<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Part B: The Table Header</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"| Attribute | SPD | EOD | EqOdds | ABROCA | Status |</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"|:----------|:---:|:---:|:------:|:------:|:-------|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper function for formatting values with checkmarks</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fmt(val, is_fair, is_signed<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    symbol <span class="op">=</span> <span class="st">"✓"</span> <span class="cf">if</span> is_fair <span class="cf">else</span> <span class="st">"✗"</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_signed:</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:+.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Part C: The Table Rows</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fairness_summary:</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">"**FAIR**"</span> <span class="cf">if</span> row[<span class="st">'Violations'</span>] <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f"UNFAIR (</span><span class="sc">{</span>row[<span class="st">'Violations'</span>]<span class="sc">}</span><span class="ss">/4)"</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct row string</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="ss">f"| </span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'SPD'</span>], row[<span class="st">'SPD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EOD'</span>], row[<span class="st">'EOD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EqOdds'</span>], row[<span class="st">'EqOdds_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'ABROCA'</span>], row[<span class="st">'ABROCA_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>status<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    markdown_output <span class="op">+=</span> line</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Render everything</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>display(Markdown(markdown_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-audit" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="6">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Fairness Audit Results
+</figcaption>
+<div aria-describedby="tbl-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><strong>Thresholds:</strong> |SPD| &lt; 0.1, |EOD| &lt; 0.1, EqOdds &lt; 0.1, ABROCA &lt; 0.03</p>
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: center;">SPD</th>
+<th style="text-align: center;">EOD</th>
+<th style="text-align: center;">EqOdds</th>
+<th style="text-align: center;">ABROCA</th>
+<th style="text-align: left;">Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">gender</td>
+<td style="text-align: center;">+0.061 ✓</td>
+<td style="text-align: center;">+0.062 ✓</td>
+<td style="text-align: center;">0.077 ✓</td>
+<td style="text-align: center;">0.018 ✓</td>
+<td style="text-align: left;"><strong>FAIR</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">region</td>
+<td style="text-align: center;">+0.242 ✗</td>
+<td style="text-align: center;">+0.183 ✗</td>
+<td style="text-align: center;">0.216 ✗</td>
+<td style="text-align: center;">0.109 ✗</td>
+<td style="text-align: left;">UNFAIR (4/4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">imd_band</td>
+<td style="text-align: center;">+0.159 ✗</td>
+<td style="text-align: center;">+0.048 ✓</td>
+<td style="text-align: center;">0.079 ✓</td>
+<td style="text-align: center;">0.055 ✗</td>
+<td style="text-align: left;">UNFAIR (2/4)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age_band</td>
+<td style="text-align: center;">+0.016 ✓</td>
+<td style="text-align: center;">+0.022 ✓</td>
+<td style="text-align: center;">0.107 ✗</td>
+<td style="text-align: center;">0.052 ✗</td>
+<td style="text-align: left;">UNFAIR (2/4)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">disability</td>
+<td style="text-align: center;">+0.124 ✗</td>
+<td style="text-align: center;">+0.053 ✓</td>
+<td style="text-align: center;">0.126 ✗</td>
+<td style="text-align: center;">0.015 ✓</td>
+<td style="text-align: left;">UNFAIR (2/4)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="cell-fig-fairness-audit" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">5</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># SPD and EOD comparison</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(fairness_df))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>bars1 <span class="op">=</span> ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, fairness_df[<span class="st">'SPD'</span>], width, label<span class="op">=</span><span class="st">'SPD'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>bars2 <span class="op">=</span> ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, fairness_df[<span class="st">'EOD'</span>], width, label<span class="op">=</span><span class="st">'EOD'</span>, color<span class="op">=</span><span class="st">'coral'</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, label<span class="op">=</span><span class="st">'Threshold (+)'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=-</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, label<span class="op">=</span><span class="st">'Threshold (-)'</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Disparity Value'</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Statistical Parity &amp; Equal Opportunity Differences'</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(fairness_df[<span class="st">'Attribute'</span>])</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">0.15</span>, <span class="fl">0.30</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Violations by attribute</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'green'</span> <span class="cf">if</span> v <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'orange'</span> <span class="cf">if</span> v <span class="op">&lt;=</span> <span class="dv">2</span> <span class="cf">else</span> <span class="st">'red'</span> <span class="cf">for</span> v <span class="kw">in</span> fairness_df[<span class="st">'Violations'</span>]]</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.bar(fairness_df[<span class="st">'Attribute'</span>], fairness_df[<span class="st">'Violations'</span>], color<span class="op">=</span>colors)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Number of Fairness Violations'</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Fairness Violations by Protected Attribute'</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> bar <span class="kw">in</span> bars:</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> bar.get_height()</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    ax.text(bar.get_x() <span class="op">+</span> bar.get_width()<span class="op">/</span><span class="fl">2.</span>, height <span class="op">+</span> <span class="fl">0.1</span>,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(height)<span class="sc">}</span><span class="ss">/4'</span>, ha<span class="op">=</span><span class="st">'center'</span>, va<span class="op">=</span><span class="st">'bottom'</span>, fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-fairness-audit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fairness-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="final_summary_report_files/figure-html/fig-fairness-audit-output-1.png" width="1332" height="466" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fairness-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Fairness audit results showing disparities and violations by attribute
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="bias-mitigation-results" class="level2">
+<h2 class="anchored" data-anchor-id="bias-mitigation-results">Bias Mitigation Results</h2>
+<p>We applied three mitigation techniques from the <a href="https://ai-fairness-360.org/" class="external" target="_blank">AI Fairness 360 (AIF360) toolkit</a>:</p>
+<ol type="1">
+<li><strong>Reweighting</strong> (Pre-processing): Adjusts training sample weights</li>
+<li><strong>Threshold Optimization</strong> (Post-processing): Group-specific classification thresholds</li>
+<li><strong>Reject Option Classification</strong> (Post-processing): Adjusts predictions near the decision boundary</li>
+</ol>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Prepare the data (Same logic as before)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>mitigation_summary <span class="op">=</span> []</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> attr, results <span class="kw">in</span> [(<span class="st">'Region'</span>, mitigation_region),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                      (<span class="st">'IMD Band'</span>, mitigation_imd),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                      (<span class="st">'Disability'</span>, mitigation_disability),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                      (<span class="st">'Age Band'</span>, mitigation_age)]:</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    baseline <span class="op">=</span> results[<span class="st">'approaches'</span>][<span class="st">'baseline'</span>]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    best_approach <span class="op">=</span> results[<span class="st">'recommendation'</span>]</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    best_key <span class="op">=</span> best_approach.lower().replace(<span class="st">' '</span>, <span class="st">'_'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fallback to threshold optimization if key not found</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    best <span class="op">=</span> results[<span class="st">'approaches'</span>].get(best_key, results[<span class="st">'approaches'</span>][<span class="st">'threshold_optimization'</span>])</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    mitigation_summary.append({</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Attribute'</span>: attr,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Baseline_AUC'</span>: baseline[<span class="st">'auc'</span>],</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Baseline_SPD'</span>: baseline[<span class="st">'spd'</span>],</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Baseline_EOD'</span>: baseline[<span class="st">'eod'</span>],</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Best_Approach'</span>: best_approach,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Mitigated_AUC'</span>: best[<span class="st">'auc'</span>],</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Mitigated_SPD'</span>: best[<span class="st">'spd'</span>],</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Mitigated_EOD'</span>: best[<span class="st">'eod'</span>]</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co"># --- CRITICAL RESTORATION: Create the DataFrame for the next plot ---</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>mitigation_df <span class="op">=</span> pd.DataFrame(mitigation_summary)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build the Markdown Table</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Header</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">=</span> <span class="st">"| Attribute | Approach | AUC (Base -&gt; Final) | SPD (Base -&gt; Final) | EOD (Base -&gt; Final) |</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"|:----------|:---------|:-------------------:|:-------------------:|:-------------------:|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> mitigation_summary:</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Format the transitions: "0.123 -&gt; 0.045"</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    auc_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_AUC'</span>]<span class="sc">:.4f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use signed formatting for fairness metrics (+0.050)</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    spd_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    eod_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct the row</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>auc_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>spd_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>eod_change<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Render</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-mitigation-results" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Bias Mitigation Results
+</figcaption>
+<div aria-describedby="tbl-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Approach</th>
+<th style="text-align: center;">AUC (Base -&gt; Final)</th>
+<th style="text-align: center;">SPD (Base -&gt; Final)</th>
+<th style="text-align: center;">EOD (Base -&gt; Final)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Region</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
+<td style="text-align: center;">+0.079 -&gt; +0.060</td>
+<td style="text-align: center;">+0.019 -&gt; -0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>IMD Band</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
+<td style="text-align: center;">+0.113 -&gt; +0.062</td>
+<td style="text-align: center;">+0.053 -&gt; -0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Disability</strong></td>
+<td style="text-align: left;">Reweighted</td>
+<td style="text-align: center;">0.8889 -&gt; 0.8874</td>
+<td style="text-align: center;">+0.124 -&gt; +0.053</td>
+<td style="text-align: center;">+0.053 -&gt; -0.021</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Age Band</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
+<td style="text-align: center;">+0.088 -&gt; +0.030</td>
+<td style="text-align: center;">+0.054 -&gt; +0.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="cell-fig-mitigation-results" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>attributes <span class="op">=</span> mitigation_df[<span class="st">'Attribute'</span>]</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(attributes))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># AUC comparison</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Baseline_AUC'</span>], width, label<span class="op">=</span><span class="st">'Baseline'</span>, color<span class="op">=</span><span class="st">'steelblue'</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Mitigated_AUC'</span>], width, label<span class="op">=</span><span class="st">'Mitigated'</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="fl">0.80</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Target'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'AUC'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Model Performance (AUC)'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(attributes, rotation<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="fl">0.7</span>, <span class="fl">1.0</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># SPD comparison</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Baseline_SPD'</span>].<span class="bu">abs</span>(), width, label<span class="op">=</span><span class="st">'Baseline'</span>, color<span class="op">=</span><span class="st">'coral'</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Mitigated_SPD'</span>].<span class="bu">abs</span>(), width, label<span class="op">=</span><span class="st">'Mitigated'</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Threshold'</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'|SPD|'</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Statistical Parity Difference'</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(attributes, rotation<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># EOD comparison</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">2</span>]</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Baseline_EOD'</span>].<span class="bu">abs</span>(), width, label<span class="op">=</span><span class="st">'Baseline'</span>, color<span class="op">=</span><span class="st">'coral'</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width<span class="op">/</span><span class="dv">2</span>, mitigation_df[<span class="st">'Mitigated_EOD'</span>].<span class="bu">abs</span>(), width, label<span class="op">=</span><span class="st">'Mitigated'</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>ax.axhline(y<span class="op">=</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Threshold'</span>)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'|EOD|'</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Equal Opportunity Difference'</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(attributes, rotation<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-mitigation-results" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="final_summary_report_files/figure-html/fig-mitigation-results-output-1.png" width="1428" height="467" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mitigation-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Comparison of baseline and mitigated model performance across attributes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="mitigation-summary" class="level3">
+<h3 class="anchored" data-anchor-id="mitigation-summary">Mitigation Summary</h3>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Markdown Table</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">=</span> <span class="st">"| Attribute | Approach | AUC | SPD | EOD |</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"|:----------|:---------|:---:|:---:|:---:|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> mitigation_df.iterrows():</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.4f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-mitigation-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="10">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mitigation-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Mitigation Summary
+</figcaption>
+<div aria-describedby="tbl-mitigation-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Approach</th>
+<th style="text-align: center;">AUC</th>
+<th style="text-align: center;">SPD</th>
+<th style="text-align: center;">EOD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Region</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">+0.060</td>
+<td style="text-align: center;">-0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>IMD Band</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">+0.062</td>
+<td style="text-align: center;">-0.002</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Disability</strong></td>
+<td style="text-align: left;">Reweighted</td>
+<td style="text-align: center;">0.8874</td>
+<td style="text-align: center;">+0.053</td>
+<td style="text-align: center;">-0.021</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Age Band</strong></td>
+<td style="text-align: left;">Threshold Optimization</td>
+<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">+0.030</td>
+<td style="text-align: center;">+0.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="why-different-approaches-work-for-different-attributes" class="level3">
+<h3 class="anchored" data-anchor-id="why-different-approaches-work-for-different-attributes">Why Different Approaches Work for Different Attributes</h3>
+<p><strong>Threshold Optimization</strong> was most effective for Region, Relative Poverty (i.e., IMD Band), and Age Band, while <strong>Reweighting</strong> worked best for Disability. This pattern reflects fundamental differences in group representation:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 39%">
+<col style="width: 24%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Attribute</th>
+<th>Unprivileged Group Size</th>
+<th>Best Approach</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Region</td>
+<td>3,649 (75%)</td>
+<td>Threshold Optimization</td>
+<td>Large groups; model learned robust patterns</td>
+</tr>
+<tr class="even">
+<td>IMD Band</td>
+<td>3,218 (66%)</td>
+<td>Threshold Optimization</td>
+<td>Large groups; post-processing sufficient</td>
+</tr>
+<tr class="odd">
+<td>Age Band</td>
+<td>3,442 (70%)</td>
+<td>Threshold Optimization</td>
+<td>Large groups; threshold adjustment adequate</td>
+</tr>
+<tr class="even">
+<td>Disability</td>
+<td>457 (9%)</td>
+<td>Reweighting</td>
+<td>Small minority; needs pre-processing</td>
+</tr>
+</tbody>
+</table>
+<section id="why-threshold-optimization-works-for-majority-unprivileged-attributes" class="level4">
+<h4 class="anchored" data-anchor-id="why-threshold-optimization-works-for-majority-unprivileged-attributes">Why Threshold Optimization works for majority-unprivileged attributes:</h4>
+<ul>
+<li>When unprivileged groups are large (66–75% of data), the model already learns good representations for both groups during training</li>
+<li>Post-processing adjusts the decision boundary per group without retraining</li>
+<li>This preserves the original AUC exactly (0.889) while achieving near-zero EOD</li>
+<li>It is computationally efficient—no model retraining required.</li>
+</ul>
+</section>
+<section id="why-reweighting-works-better-for-disability" class="level4">
+<h4 class="anchored" data-anchor-id="why-reweighting-works-better-for-disability">Why Reweighting works better for Disability:</h4>
+<ul>
+<li>Students with disabilities represent only 9% of the dataset</li>
+<li>The baseline model learned less robust patterns for this minority group (higher False Positive Rate, or FPR: 0.178 vs 0.105)</li>
+<li>Reweighting assigns higher importance to minority samples during training, forcing the model to learn better representations</li>
+<li>Although it slightly reduces AUC (0.889 → 0.887), it achieves substantially better Equalized Odds (0.027 vs 0.051)</li>
+<li>The trade-off is worthwhile: a 0.2% AUC reduction for a 48% improvement in fairness.</li>
+</ul>
+<p><strong>Key insight:</strong> Pre-processing (reweighting) addresses representation imbalance at the source, while post-processing (threshold optimization) works when the model already has adequate signal for all groups.</p>
+</section>
+</section>
+</section>
+<section id="intersectional-fairness-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="intersectional-fairness-analysis">Intersectional Fairness Analysis</h2>
+<p>We analyzed fairness across subgroups defined by combinations of protected attributes.</p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recreate intersectional groups from predictions data for detailed analysis</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>low_risk_regions <span class="op">=</span> [<span class="st">'Ireland'</span>, <span class="st">'North Region'</span>, <span class="st">'South East Region'</span>, <span class="st">'South Region'</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>predictions[<span class="st">'region_group'</span>] <span class="op">=</span> predictions[<span class="st">'region'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> r: <span class="st">'Low-risk'</span> <span class="cf">if</span> r <span class="kw">in</span> low_risk_regions <span class="cf">else</span> <span class="st">'High-risk'</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>high_imd_bands <span class="op">=</span> [<span class="st">'60-70%'</span>, <span class="st">'70-80%'</span>, <span class="st">'80-90%'</span>, <span class="st">'90-100%'</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>predictions[<span class="st">'imd_group'</span>] <span class="op">=</span> predictions[<span class="st">'imd_band_imputed'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> i: <span class="st">'Less-deprived'</span> <span class="cf">if</span> i <span class="kw">in</span> high_imd_bands <span class="cf">else</span> <span class="st">'More-deprived'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>predictions[<span class="st">'disability_group'</span>] <span class="op">=</span> predictions[<span class="st">'disability'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> d: <span class="st">'No disability'</span> <span class="cf">if</span> d <span class="op">==</span> <span class="st">'N'</span> <span class="cf">else</span> <span class="st">'Has disability'</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate metrics for each intersection</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calc_group_metrics(df, group_cols):</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, group <span class="kw">in</span> df.groupby(group_cols):</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        n <span class="op">=</span> <span class="bu">len</span>(group)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> n <span class="op">&lt;</span> <span class="dv">30</span>:</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        group_name <span class="op">=</span> <span class="st">' × '</span>.join(<span class="bu">str</span>(x) <span class="cf">for</span> x <span class="kw">in</span> name) <span class="cf">if</span> <span class="bu">isinstance</span>(name, <span class="bu">tuple</span>) <span class="cf">else</span> <span class="bu">str</span>(name)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        base_rate <span class="op">=</span> group[<span class="st">'y_true'</span>].mean()</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        selection_rate <span class="op">=</span> group[<span class="st">'y_pred'</span>].mean()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        disparity <span class="op">=</span> selection_rate <span class="op">-</span> df[<span class="st">'y_pred'</span>].mean()</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>            <span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_auc_score</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>            auc <span class="op">=</span> roc_auc_score(group[<span class="st">'y_true'</span>], group[<span class="st">'y_pred_proba'</span>])</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span>:</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>            auc <span class="op">=</span> np.nan</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        results.append({</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">'group'</span>: group_name, <span class="st">'n'</span>: n, <span class="st">'base_rate'</span>: base_rate,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>            <span class="st">'selection_rate'</span>: selection_rate, <span class="st">'disparity'</span>: disparity, <span class="st">'auc'</span>: auc</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(results).sort_values(<span class="st">'selection_rate'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Analyze key intersections</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>region_imd <span class="op">=</span> calc_group_metrics(predictions, [<span class="st">'region_group'</span>, <span class="st">'imd_group'</span>])</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>region_disability <span class="op">=</span> calc_group_metrics(predictions, [<span class="st">'region_group'</span>, <span class="st">'disability_group'</span>])</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>imd_disability <span class="op">=</span> calc_group_metrics(predictions, [<span class="st">'imd_group'</span>, <span class="st">'disability_group'</span>])</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>gender_region <span class="op">=</span> calc_group_metrics(predictions, [<span class="st">'gender'</span>, <span class="st">'region_group'</span>])</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all intersections</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>all_intersections <span class="op">=</span> pd.concat([</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    region_imd.assign(intersection<span class="op">=</span><span class="st">'Region × IMD'</span>),</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    region_disability.assign(intersection<span class="op">=</span><span class="st">'Region × Disability'</span>),</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    imd_disability.assign(intersection<span class="op">=</span><span class="st">'IMD × Disability'</span>),</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    gender_region.assign(intersection<span class="op">=</span><span class="st">'Gender × Region'</span>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Markdown output</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> intersectional_results[<span class="st">'selection_rate_range'</span>]</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>ar <span class="op">=</span> intersectional_results[<span class="st">'auc_range'</span>]</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">=</span> <span class="ss">f"""**Intersections analyzed:** </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(intersectional_results[<span class="st">'intersections_analyzed'</span>])<span class="sc">}</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="ss">**Selection Rate Range:**</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="ss">* Minimum: </span><span class="sc">{</span>sr[<span class="st">'min'</span>]<span class="sc">:.3f}</span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="ss">* Maximum: </span><span class="sc">{</span>sr[<span class="st">'max'</span>]<span class="sc">:.3f}</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="ss">* Range: </span><span class="sc">{</span>sr[<span class="st">'range'</span>]<span class="sc">:.3f}</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="ss">**AUC Range (across intersectional groups):**</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a><span class="ss">* Minimum: </span><span class="sc">{</span>ar[<span class="st">'min'</span>]<span class="sc">:.3f}</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a><span class="ss">* Maximum: </span><span class="sc">{</span>ar[<span class="st">'max'</span>]<span class="sc">:.3f}</span></span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="ss">* All groups above 0.80 target: </span><span class="sc">{</span><span class="st">'Yes ✓'</span> <span class="cf">if</span> ar[<span class="st">'all_above_target'</span>] <span class="cf">else</span> <span class="st">'No ✗'</span><span class="sc">}</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a><span class="ss">**Groups with Highest Selection Disparities:**</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="ss">| Intersection | Group | n | Base Rate | Selection Rate | Disparity | AUC |</span></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="ss">|:-------------|:------|--:|:---------:|:--------------:|:---------:|:---:|</span></span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Add top 5 disparities to table</span></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>top_disparities <span class="op">=</span> all_intersections.nlargest(<span class="dv">5</span>, <span class="st">'disparity'</span>)</span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> top_disparities.iterrows():</span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"| </span><span class="sc">{</span>row[<span class="st">'intersection'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'group'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'n'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'base_rate'</span>]<span class="sc">:.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'selection_rate'</span>]<span class="sc">:.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'disparity'</span>]<span class="sc">:+.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'auc'</span>]<span class="sc">:.3f}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>display(Markdown(md_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p><strong>Intersections analyzed:</strong> Region × IMD, Region × Disability, IMD × Disability, Gender × Region</p>
+<p><strong>Selection Rate Range:</strong></p>
+<ul>
+<li>Minimum: 0.335</li>
+<li>Maximum: 0.601</li>
+<li>Range: 0.266</li>
+</ul>
+<p><strong>AUC Range (across intersectional groups):</strong></p>
+<ul>
+<li>Minimum: 0.852</li>
+<li>Maximum: 0.898</li>
+<li>All groups above 0.80 target: Yes ✓</li>
+</ul>
+<p><strong>Groups with Highest Selection Disparities:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 10%">
+<col style="width: 4%">
+<col style="width: 16%">
+<col style="width: 23%">
+<col style="width: 16%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Intersection</th>
+<th style="text-align: left;">Group</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: center;">Base Rate</th>
+<th style="text-align: center;">Selection Rate</th>
+<th style="text-align: center;">Disparity</th>
+<th style="text-align: center;">AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">IMD × Disability</td>
+<td style="text-align: left;">More-deprived × Has disability</td>
+<td style="text-align: right;">341</td>
+<td style="text-align: center;">0.663</td>
+<td style="text-align: center;">0.601</td>
+<td style="text-align: center;">+0.156</td>
+<td style="text-align: center;">0.881</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Region × Disability</td>
+<td style="text-align: left;">High-risk × Has disability</td>
+<td style="text-align: right;">355</td>
+<td style="text-align: center;">0.628</td>
+<td style="text-align: center;">0.580</td>
+<td style="text-align: center;">+0.135</td>
+<td style="text-align: center;">0.872</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Region × IMD</td>
+<td style="text-align: left;">High-risk × More-deprived</td>
+<td style="text-align: right;">2474</td>
+<td style="text-align: center;">0.586</td>
+<td style="text-align: center;">0.503</td>
+<td style="text-align: center;">+0.058</td>
+<td style="text-align: center;">0.891</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gender × Region</td>
+<td style="text-align: left;">M × High-risk</td>
+<td style="text-align: right;">1955</td>
+<td style="text-align: center;">0.569</td>
+<td style="text-align: center;">0.497</td>
+<td style="text-align: center;">+0.051</td>
+<td style="text-align: center;">0.897</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Region × Disability</td>
+<td style="text-align: left;">Low-risk × Has disability</td>
+<td style="text-align: right;">102</td>
+<td style="text-align: center;">0.588</td>
+<td style="text-align: center;">0.480</td>
+<td style="text-align: center;">+0.035</td>
+<td style="text-align: center;">0.882</td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<div id="cell-fig-intersectional-disparities" class="cell" data-execution_count="12">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize selection rate disparities across intersectional groups</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Left: Dot plot of selection rates with base rates for comparison</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>all_sorted <span class="op">=</span> all_intersections.sort_values(<span class="st">'selection_rate'</span>, ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>y_pos <span class="op">=</span> np.arange(<span class="bu">len</span>(all_sorted))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot base rates and selection rates</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>ax.scatter(all_sorted[<span class="st">'base_rate'</span>], y_pos, color<span class="op">=</span><span class="st">'gray'</span>, s<span class="op">=</span><span class="dv">80</span>, alpha<span class="op">=</span><span class="fl">0.6</span>, label<span class="op">=</span><span class="st">'Actual At-Risk Rate'</span>, zorder<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'red'</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&gt;</span> <span class="fl">0.10</span> <span class="cf">else</span> <span class="st">'steelblue'</span> <span class="cf">for</span> d <span class="kw">in</span> all_sorted[<span class="st">'disparity'</span>]]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>ax.scatter(all_sorted[<span class="st">'selection_rate'</span>], y_pos, color<span class="op">=</span>colors, s<span class="op">=</span><span class="dv">100</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">'Model Selection Rate'</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect base rate to selection rate</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (_, row) <span class="kw">in</span> <span class="bu">enumerate</span>(all_sorted.iterrows()):</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    ax.plot([row[<span class="st">'base_rate'</span>], row[<span class="st">'selection_rate'</span>]], [i, i], color<span class="op">=</span><span class="st">'lightgray'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, zorder<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span>predictions[<span class="st">'y_pred'</span>].mean(), color<span class="op">=</span><span class="st">'black'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>, label<span class="op">=</span><span class="st">'Overall Selection Rate'</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(y_pos)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels([<span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'group'</span>]<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> _, row <span class="kw">in</span> all_sorted.iterrows()], fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Rate'</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Selection Rates vs Actual At-Risk Rates</span><span class="ch">\n</span><span class="st">by Intersectional Group'</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">'lower right'</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="fl">0.25</span>, <span class="fl">0.70</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Right: Disparity bar chart</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>all_sorted_disp <span class="op">=</span> all_intersections.sort_values(<span class="st">'disparity'</span>, ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'red'</span> <span class="cf">if</span> <span class="bu">abs</span>(d) <span class="op">&gt;</span> <span class="fl">0.10</span> <span class="cf">else</span> (<span class="st">'coral'</span> <span class="cf">if</span> d <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="st">'steelblue'</span>) <span class="cf">for</span> d <span class="kw">in</span> all_sorted_disp[<span class="st">'disparity'</span>]]</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>bars <span class="op">=</span> ax.barh(<span class="bu">range</span>(<span class="bu">len</span>(all_sorted_disp)), all_sorted_disp[<span class="st">'disparity'</span>], color<span class="op">=</span>colors)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'black'</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">'+/-0.10 threshold'</span>)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=-</span><span class="fl">0.10</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(<span class="bu">range</span>(<span class="bu">len</span>(all_sorted_disp)))</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels([<span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'group'</span>]<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> _, row <span class="kw">in</span> all_sorted_disp.iterrows()], fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Selection Rate Disparity (vs Overall)'</span>)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Selection Rate Disparity</span><span class="ch">\n</span><span class="st">by Intersectional Group'</span>)</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>ax.legend(loc<span class="op">=</span><span class="st">'lower right'</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>plt.savefig(REPORTS_DIR <span class="op">/</span> <span class="st">'summary_intersectional_disparities.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-intersectional-disparities" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-intersectional-disparities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="final_summary_report_files/figure-html/fig-intersectional-disparities-output-1.png" width="1332" height="561" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intersectional-disparities-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Selection rate disparities across intersectional groups
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary of flagged groups as Markdown</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>flagged <span class="op">=</span> all_intersections[<span class="bu">abs</span>(all_intersections[<span class="st">'disparity'</span>]) <span class="op">&gt;</span> <span class="fl">0.10</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">=</span> <span class="ss">f"**Groups exceeding +/-0.10 disparity threshold:** </span><span class="sc">{</span><span class="bu">len</span>(flagged)<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(all_intersections)<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(flagged) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="st">"Flagged groups:</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _, row <span class="kw">in</span> flagged.iterrows():</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>row[<span class="st">'group'</span>]<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>row[<span class="st">'intersection'</span>]<span class="sc">}</span><span class="ss">): disparity = </span><span class="sc">{</span>row[<span class="st">'disparity'</span>]<span class="sc">:+.3f}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>display(Markdown(md_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p><strong>Groups exceeding +/-0.10 disparity threshold:</strong> 3 of 16</p>
+<p>Flagged groups:</p>
+<ul>
+<li>Low-risk × Less-deprived (Region × IMD): disparity = -0.111</li>
+<li>High-risk × Has disability (Region × Disability): disparity = +0.135</li>
+<li>More-deprived × Has disability (IMD × Disability): disparity = +0.156</li>
+</ul>
+<section id="interpreting-the-intersectional-findings" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-intersectional-findings">Interpreting the Intersectional Findings</h3>
+<section id="most-problematic-intersections" class="level4">
+<h4 class="anchored" data-anchor-id="most-problematic-intersections">Most Problematic Intersections</h4>
+<p>These raw statistics require interpretation to understand whether they represent problematic disparities. Three intersectional groups exceeded the ±0.10 selection rate disparity threshold:</p>
+<div style="page-break-after: always;"></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 25%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>Intersection</th>
+<th>Disparity</th>
+<th>Base Rate</th>
+<th>Selection Rate</th>
+<th>AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>More-deprived × Has disability</td>
+<td>IMD × Disability</td>
+<td>+0.156</td>
+<td>0.663</td>
+<td>0.601</td>
+<td>0.881</td>
+</tr>
+<tr class="even">
+<td>High-risk × Has disability</td>
+<td>Region × Disability</td>
+<td>+0.135</td>
+<td>0.628</td>
+<td>0.580</td>
+<td>0.872</td>
+</tr>
+<tr class="odd">
+<td>Low-risk × Less-deprived</td>
+<td>Region × IMD</td>
+<td>-0.111</td>
+<td>0.391</td>
+<td>0.335</td>
+<td>0.880</td>
+</tr>
+</tbody>
+</table>
+<p>However, these disparities are contextually appropriate because:</p>
+<ol type="1">
+<li><strong>Selection rates track actual at-risk rates:</strong> the model under-predicts rather than over-predicts for all three groups (selection rate &lt; base rate)</li>
+<li><strong>AUC remains strong (0.87–0.88):</strong> the model discriminates well within each subgroup</li>
+<li><strong>Disparities reflect real risk differences:</strong> students in deprived areas with disabilities genuinely face higher dropout risk.</li>
+</ol>
+</section>
+<section id="why-the-0.266-selection-rate-range-is-not-severe" class="level4">
+<h4 class="anchored" data-anchor-id="why-the-0.266-selection-rate-range-is-not-severe">Why the 0.266 Selection Rate Range Is Not “Severe”</h4>
+<p>The 0.266 range (0.335 to 0.601) appears large but reflects legitimate variation in underlying risk:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Extreme</th>
+<th>Selection Rate</th>
+<th>Actual At-Risk Rate</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Lowest (Low-risk × Less-deprived)</td>
+<td>0.335</td>
+<td>0.391</td>
+<td>-0.056</td>
+</tr>
+<tr class="even">
+<td>Highest (More-deprived × Has disability)</td>
+<td>0.601</td>
+<td>0.663</td>
+<td>-0.062</td>
+</tr>
+</tbody>
+</table>
+<p>The model slightly <em>under-predicts</em> risk for both extremes, which is conservative behavior. The key insight is that <strong>selection rate variation mirrors base rate variation</strong>—this is appropriate model behavior, not unfair discrimination.</p>
+</section>
+<section id="criteria-for-no-severe-disparities-conclusion" class="level4">
+<h4 class="anchored" data-anchor-id="criteria-for-no-severe-disparities-conclusion">Criteria for “No Severe Disparities” Conclusion:</h4>
+<ol type="1">
+<li>All 16 intersectional groups maintain AUC &gt; 0.80 (range: 0.852–0.898)</li>
+<li>Only 3 of 16 groups exceed the ±0.10 statistical parity threshold</li>
+<li>No group has an AUC below 0.75 (our critical threshold)</li>
+<li>All flagged groups are <em>under-predicted</em> (selection rate &lt; base rate), not over-predicted</li>
+<li>Individual attribute mitigations do not create new intersectional harms</li>
+</ol>
+</section>
+</section>
+</section>
+<section id="key-findings-and-conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-and-conclusions">Key Findings and Conclusions</h2>
+<section id="key-findings-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-findings-1">Key Findings</h3>
+<ol type="1">
+<li><strong>Model Performance</strong>
+<ul>
+<li>Achieved AUC of 0.889, exceeding the 0.80 target</li>
+<li>Early prediction within the first 25% of the course enables timely intervention</li>
+<li>Temporal VLE engagement features are strong predictors of risk</li>
+</ul></li>
+<li><strong>Fairness Audit</strong>
+<ul>
+<li>Region showed the highest bias (4/4 metrics violated)</li>
+<li>Gender was the only fair attribute (0/4 violations)</li>
+<li>Socioeconomic factors (IMD) contribute to prediction disparities</li>
+</ul></li>
+<li><strong>Mitigation Effectiveness</strong>
+<ul>
+<li>Threshold Optimization: Best for Region, IMD, Age</li>
+<li>Reweighting: Best for Disability</li>
+<li>All mitigations maintained an AUC above the 0.80 target</li>
+<li>EOD reduced to near-zero for all attributes</li>
+</ul></li>
+<li><strong>Intersectional Fairness</strong>
+<ul>
+<li>No critical intersectional disparities identified</li>
+<li>AUC remains above 0.80 for all subgroups</li>
+<li>Combined mitigation is not required</li>
+</ul></li>
+</ol>
+</section>
+<section id="recommendations" class="level3">
+<h3 class="anchored" data-anchor-id="recommendations">Recommendations</h3>
+<p><strong>For Deployment:</strong></p>
+<ul>
+<li>Use Threshold Optimization for Region, IMD Band, and Age Band</li>
+<li>Use the Reweighted model for Disability fairness</li>
+<li>Apply group-specific thresholds at prediction time</li>
+</ul>
+<p><strong>For Institutions:</strong></p>
+<ul>
+<li>Monitor fairness metrics continuously after deployment</li>
+<li>Collect feedback on intervention effectiveness by demographic group</li>
+<li>Consider socioeconomic support alongside academic interventions</li>
+</ul>
+<p><strong>For Future Research:</strong></p>
+<ul>
+<li>Explore in-processing fairness constraints (adversarial debiasing)</li>
+<li>Investigate causal fairness approaches</li>
+<li>Validate on additional institutions and student populations</li>
+</ul>
+</section>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>While this project demonstrates a successful approach to bias-aware early warning systems, several limitations should be acknowledged:</p>
+<section id="generalizability-beyond-oulad" class="level3">
+<h3 class="anchored" data-anchor-id="generalizability-beyond-oulad">Generalizability Beyond OULAD</h3>
+<ul>
+<li><strong>Single institution:</strong> The Open University has a unique profile—predominantly online, part-time, adult learners with open admissions. Results may not transfer to traditional residential universities with different student demographics.</li>
+<li><strong>UK-specific context:</strong> Protected attributes like IMD (Index of Multiple Deprivation) and regional classifications are UK-specific. International applications would require different socioeconomic proxies.</li>
+<li><strong>Time period:</strong> OULAD covers the 2013–2014 academic year. Learning behaviors and platform usage patterns have evolved significantly since then.</li>
+<li><strong>Course structure:</strong> The Open University’s modular, presentation-based structure differs from semester or quarter systems common elsewhere.</li>
+</ul>
+</section>
+<section id="week-prediction-window-trade-offs" class="level3">
+<h3 class="anchored" data-anchor-id="week-prediction-window-trade-offs">10-Week Prediction Window Trade-offs</h3>
+<p>The choice to predict within the first 25% of course completion (approximately 10 weeks) involves inherent trade-offs:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Advantage</th>
+<th>Limitation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Early intervention is possible</td>
+<td>Less behavioral data available</td>
+</tr>
+<tr class="even">
+<td>Students can still recover</td>
+<td>Some at-risk patterns emerge later</td>
+</tr>
+<tr class="odd">
+<td>Aligns with OU’s early alert timelines</td>
+<td>May miss slow-developing disengagement</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Information vs.&nbsp;actionability:</strong> Waiting longer would improve predictive accuracy but reduce the intervention window.</li>
+<li><strong>Course length variation:</strong> A fixed 10-week window represents different proportions of different courses (7–39 weeks in OULAD).</li>
+<li><strong>Cold start problem:</strong> Students with minimal early engagement are harder to assess, yet may be most at-risk.</li>
+</ul>
+</section>
+<section id="what-the-model-does-not-capture" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-model-does-not-capture">What the Model Does Not Capture</h3>
+<p>The LSTM model relies on observable learning platform behaviors and demographic data. It cannot account for:</p>
+<p><strong>External life factors:</strong></p>
+<ul>
+<li>Employment changes, job loss, or increased work hours</li>
+<li>Family responsibilities (caregiving, childcare)</li>
+<li>Health issues (physical or mental)</li>
+<li>Financial hardship beyond what IMD captures</li>
+<li>Housing instability or relocation</li>
+</ul>
+<p><strong>Unmeasured academic factors:</strong></p>
+<ul>
+<li>Quality of learning (vs.&nbsp;quantity of clicks)</li>
+<li>Peer support networks and study groups</li>
+<li>Prior knowledge or preparation gaps</li>
+<li>Motivation and self-efficacy</li>
+<li>Course-specific difficulty mismatches</li>
+</ul>
+<p><strong>Institutional factors:</strong></p>
+<ul>
+<li>Quality of course materials and instruction</li>
+<li>Tutor responsiveness and support</li>
+<li>Technical barriers to platform access</li>
+<li>Changes in course structure mid-presentation</li>
+</ul>
+</section>
+<section id="fairness-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="fairness-limitations">Fairness Limitations</h3>
+<ul>
+<li><strong>Binary groupings:</strong> Complex attributes (13 regions, 10 IMD bands) were collapsed into binary groups for fairness analysis, potentially masking within-group disparities.</li>
+<li><strong>Intersectionality depth:</strong> Three-way intersections had limited statistical power due to small subgroup sizes.</li>
+<li><strong>Proxy discrimination:</strong> Even after mitigation, the model may encode protected attributes through correlated features (e.g., VLE access patterns correlating with socioeconomic status).</li>
+<li><strong>Fairness metric choice:</strong> Different fairness definitions (statistical parity vs.&nbsp;equalized odds) can conflict; our threshold choices reflect value judgments.</li>
+</ul>
+</section>
+<section id="implications-for-deployment" class="level3">
+<h3 class="anchored" data-anchor-id="implications-for-deployment">Implications for Deployment</h3>
+<p>These limitations suggest that any deployed system should:</p>
+<ol type="1">
+<li><strong>Supplement, not replace,</strong> human judgment in student support decisions</li>
+<li><strong>Include feedback mechanisms</strong> to capture false positives/negatives</li>
+<li><strong>Be regularly re-validated</strong> on contemporary data</li>
+<li><strong>Provide transparency</strong> to students about how predictions are made</li>
+<li><strong>Avoid deterministic interventions</strong> that could become self-fulfilling prophecies</li>
+</ol>
+</section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>This capstone project successfully developed a <strong>bias-aware Early Warning System</strong> for identifying at-risk students in higher education. Key achievements include:</p>
+<ol type="1">
+<li><p><strong>Strong Predictive Performance:</strong> AUC of 0.889 using an LSTM architecture with temporal VLE engagement data</p></li>
+<li><p><strong>Comprehensive Fairness Audit:</strong> Identified regional and socioeconomic disparities in model predictions</p></li>
+<li><p><strong>Effective Bias Mitigation:</strong> Reduced disparities using threshold optimization and reweighting while maintaining model performance</p></li>
+<li><p><strong>Intersectional Validation:</strong> Confirmed no severe disparities across demographic subgroups</p></li>
+</ol>
+<p>The project demonstrates that it is possible to build accurate student success prediction models while actively addressing algorithmic fairness—a critical consideration as educational institutions increasingly adopt AI-driven decision support systems.</p>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="appendix-files-and-artifacts" class="level2 appendix"><h2 class="anchored quarto-appendix-heading">Appendix: Files and Artifacts</h2><div class="quarto-appendix-contents">
+
+<p>These files can be located at <a href="https://github.com/baker-jr-john/bias-aware-ews" class="external" target="_blank">GitHub</a>.</p>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize output string</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Notebooks</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Notebooks:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>notebooks <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'../notebooks'</span>).glob(<span class="st">'*.ipynb'</span>))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nb <span class="kw">in</span> notebooks:</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>nb<span class="sc">.</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Models (with size)</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Models:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> <span class="bu">sorted</span>(Path(<span class="st">'../models'</span>).glob(<span class="st">'*.pt'</span>))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> model <span class="kw">in</span> models:</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    size_kb <span class="op">=</span> model.stat().st_size <span class="op">/</span> <span class="dv">1024</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>model<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>size_kb<span class="sc">:.1f}</span><span class="ss"> KB)</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Data Outputs (with size)</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Data Outputs:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>data_files <span class="op">=</span> <span class="bu">sorted</span>(DATA_DIR.glob(<span class="st">'*'</span>))</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> data_files:</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> f.is_file():</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        size_kb <span class="op">=</span> f.stat().st_size <span class="op">/</span> <span class="dv">1024</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>        md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>f<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>size_kb<span class="sc">:.1f}</span><span class="ss"> KB)</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Figures</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>md_output <span class="op">+=</span> <span class="st">"**Figures:**</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>figures <span class="op">=</span> <span class="bu">sorted</span>(FIGURES_DIR.glob(<span class="st">'*.png'</span>))</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> fig <span class="kw">in</span> figures:</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    md_output <span class="op">+=</span> <span class="ss">f"* </span><span class="sc">{</span>fig<span class="sc">.</span>name<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Render</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>display(Markdown(md_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<p><strong>Notebooks:</strong></p>
+<ul>
+<li>01_data_exploration.ipynb</li>
+<li>02_feature_engineering.ipynb</li>
+<li>03_lstm_baseline.ipynb</li>
+<li>04_fairness_analysis.ipynb</li>
+<li>05_bias_mitigation_region.ipynb</li>
+<li>06_bias_mitigation_imd.ipynb</li>
+<li>07_bias_mitigation_disability.ipynb</li>
+<li>08_bias_mitigation_age.ipynb</li>
+<li>09_intersectional_analysis.ipynb</li>
+<li>10_final_summary_report.ipynb</li>
+</ul>
+<p><strong>Models:</strong></p>
+<ul>
+<li>lstm_baseline.pt (90.0 KB)</li>
+<li>lstm_reweighted_age.pt (365.8 KB)</li>
+<li>lstm_reweighted_disability.pt (314.1 KB)</li>
+<li>lstm_reweighted_imd.pt (363.3 KB)</li>
+<li>lstm_reweighted_region.pt (342.3 KB)</li>
+</ul>
+<p><strong>Data Outputs:</strong></p>
+<ul>
+<li>fairness_results.json (10.6 KB)</li>
+<li>feature_metadata.json (1.9 KB)</li>
+<li>features_static.csv (4013.0 KB)</li>
+<li>features_temporal.npy (6365.9 KB)</li>
+<li>final_summary.json (1.0 KB)</li>
+<li>intersectional_results.json (0.6 KB)</li>
+<li>mitigation_results_age.json (2.5 KB)</li>
+<li>mitigation_results_disability.json (2.4 KB)</li>
+<li>mitigation_results_imd.json (2.6 KB)</li>
+<li>mitigation_results_region.json (2.7 KB)</li>
+<li>predictions_baseline.csv (313.3 KB)</li>
+</ul>
+<p><strong>Figures:</strong></p>
+<ul>
+<li>age_mitigation_comparison.png</li>
+<li>disability_mitigation_comparison.png</li>
+<li>imd_mitigation_comparison.png</li>
+<li>intersectional_gender_region.png</li>
+<li>intersectional_heatmap.png</li>
+<li>intersectional_imd_disability.png</li>
+<li>intersectional_region_disability.png</li>
+<li>intersectional_region_imd.png</li>
+<li>summary_atrisk_by_attribute.png</li>
+<li>summary_fairness_audit.png</li>
+<li>summary_mitigation_results.png</li>
+<li>summary_model_performance.png</li>
+</ul>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
