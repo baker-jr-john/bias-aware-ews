@@ -39,7 +39,7 @@ format-links:
     #text(1em, fill: luma(100))[University of Pennsylvania Graduate School of Education] \
     #text(1em, fill: luma(100))[jbaker1\@upenn.edu]
     #v(3em)
-    #text(1.1em)[January 2, 2026]
+    #text(1.1em)[January 4, 2026]
   ]
 )
 #pagebreak()
