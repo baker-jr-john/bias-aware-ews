@@ -62,6 +62,8 @@ This research project developed and evaluated a **bias-aware Early Warning Syste
 | Bias Mitigation | Reduce disparities | **All four attributes improved** |
 | Intersectional Fairness | No critical issues | **Validated across 16 subgroups** |
 
+: Key Results {#tbl-key-results}
+
 ### What We Did {.unnumbered}
 
 1. **Built an early prediction model** using a dual-branch LSTM architecture that combines 10 weeks of VLE engagement patterns with static demographic features, enabling intervention while 75% of the course remains
@@ -273,6 +275,8 @@ A key design decision was *when* to make predictions. We chose a **10-week obser
 |---------------|------------|------------|----------|
 | 234–269 days (33–38 weeks) | 58–67 days (8–10 weeks) | 70 days (10 weeks) | ~26% |
 
+: Prediction Window Design {#tbl-prediction-window}
+
 #### Rationale for 10 weeks:
 
 - **Early enough for intervention:** Students flagged in week 10 still have 75% of the course remaining to improve
@@ -423,6 +427,8 @@ Among students who actually fail/withdraw, the model should identify them at sim
 | 0.05 (strict) | Max 5 per 100 difference | May be unachievable; sacrifices accuracy |
 | **0.10 (adopted)** | Max 10 per 100 difference | Balances fairness with utility |
 | 0.20 (lenient) | Max 20 per 100 difference | Permits substantial disparities |
+
+: Fairness Threshold Interpretation {#tbl-threshold}
 
 The 0.10 threshold (sometimes called the "80% rule" or "four-fifths rule" in employment contexts) represents a common regulatory and research standard. It acknowledges that perfect parity is rarely achievable while still requiring meaningful equity.
 
@@ -657,7 +663,7 @@ plt.show()
 
 ```{python}
 #| label: tbl-mitigation-summary
-#| tbl-cap: Mitigation Summary
+#| tbl-cap: Post-Mitigation Fairness Metrics
 #| output: asis
 
 # Build the Markdown Table
@@ -680,6 +686,8 @@ display(Markdown(table_md))
 | IMD Band | 3,218 (66%) | Threshold Optimization | Large groups; post-processing sufficient |
 | Age Band | 3,442 (70%) | Threshold Optimization | Large groups; threshold adjustment adequate |
 | Disability | 457 (9%) | Reweighting | Small minority; needs pre-processing |
+
+: Mitigation Rationale {#tbl-approaches}
 
 #### Why Threshold Optimization works for majority-unprivileged attributes:
 
@@ -769,8 +777,6 @@ md_output = f"""**Intersections analyzed:** {', '.join(intersectional_results['i
 * Maximum: {ar['max']:.3f}
 * All groups above 0.80 target: {'Yes ✓' if ar['all_above_target'] else 'No ✗'}
 
-**Groups with Highest Selection Disparities:**
-
 | Intersection | Group | n | Base Rate | Selection Rate | Disparity | AUC |
 |:-------------|:------|--:|:---------:|:--------------:|:---------:|:---:|
 """
@@ -779,6 +785,8 @@ md_output = f"""**Intersections analyzed:** {', '.join(intersectional_results['i
 top_disparities = all_intersections.nlargest(5, 'disparity')
 for _, row in top_disparities.iterrows():
     md_output += f"| {row['intersection']} | {row['group']} | {row['n']} | {row['base_rate']:.3f} | {row['selection_rate']:.3f} | {row['disparity']:+.3f} | {row['auc']:.3f} |\n"
+
+md_output += "\n: Groups with Highest Selection Disparities {#tbl-highest-disparities}\n"
 
 display(Markdown(md_output))
 ```
@@ -864,6 +872,8 @@ These raw statistics require interpretation to understand whether they represent
 | High-risk × Has disability | Region × Disability | +0.135 | 0.628 | 0.580 | 0.872 |
 | Low-risk × Less-deprived | Region × IMD | -0.111 | 0.391 | 0.335 | 0.880 |
 
+: Most Problematic Intersections {#tbl-intersections}
+
 However, these disparities are contextually appropriate because:
 
 1. **Selection rates track actual at-risk rates:** the model under-predicts rather than over-predicts for all three groups (selection rate < base rate)
@@ -878,6 +888,8 @@ The 0.266 range (0.335 to 0.601) appears large but reflects legitimate variation
 |---------|---------------|---------------------|------------|
 | Lowest (Low-risk × Less-deprived) | 0.335 | 0.391 | -0.056 |
 | Highest (More-deprived × Has disability) | 0.601 | 0.663 | -0.062 |
+
+: Selection Rate Extremes Comparison {#tbl-severe}
 
 The model slightly *under-predicts* risk for both extremes, which is conservative behavior. The key insight is that **selection rate variation mirrors base rate variation**—this is appropriate model behavior, not unfair discrimination.
 
@@ -954,6 +966,8 @@ The choice to predict within the first 25% of course completion (approximately 1
 | Early intervention is possible | Less behavioral data available |
 | Students can still recover | Some at-risk patterns emerge later |
 | Aligns with OU's early alert timelines | May miss slow-developing disengagement |
+
+: 10-Week Prediction Window Trade-offs {#tbl-trade-offs}
 
 - **Information vs. actionability:** Waiting longer would improve predictive accuracy but reduce the intervention window.
 - **Course length variation:** A fixed 10-week window represents different proportions of different courses (7–39 weeks in OULAD).
