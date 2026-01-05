@@ -28,7 +28,7 @@ format:
     page-layout: full
     link-external-icon: true
     link-external-newwindow: true
-    link-external-filter: '^(?:http:|https:)\/\/www\.johnbaker\.io\/custom'
+    link-external-filter: '^(?:http:|https:)\/\/(?:www\.)?johnbaker\.io(?:\/|$)'
 format-links:
   - html
   - format: typst
