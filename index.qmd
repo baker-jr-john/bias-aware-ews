@@ -9,18 +9,26 @@ format:
     title: Bias-Aware Early Warning System for Higher Education
     subtitle: Final Summary Report
     date: '2026-01-04'
+    date-modified: '2026-01-05'
     date-format: long
     author: 
       - name: John Baker
         email: jbaker1@upenn.edu
         affiliation:
           - name: 'University of Pennsylvania Graduate School of Education'
-    theme: cosmo
+            url: https://www.gse.upenn.edu/
+    respect-user-color-scheme: true
+    theme:
+      light: [cosmo, theme.scss]
+      dark: [cosmo, theme-dark.scss]
     toc: true
     code-copy: true
     code-fold: true
     code-overflow: wrap
     page-layout: full
+    link-external-icon: true
+    link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.johnbaker\.io\/custom'
 format-links:
   - html
   - format: typst
@@ -291,7 +299,44 @@ We developed a **dual-branch Long Short-Term Memory (LSTM) architecture** that c
 
 ### Architecture Diagram
 
-![Dual-branch LSTM-Based EWS Model Architecture](figures/architecture.png){#fig-architecture width=50% fig-align="center"}
+```{mermaid}
+%%| label: fig-architecture
+%%| fig-cap: "Dual-branch LSTM-Based EWS Model Architecture"
+%%| fig-responsive: false
+%%| fig-width: 3.5
+
+flowchart TD
+    subgraph Model [LSTM-Based EWS Model]
+        direction TB
+        
+        %% Temporal Branch
+        subgraph Temporal [Temporal Branch]
+            direction TB
+            InputTemp[Input: 10x5<br/>weeks x feat] --> LSTM[LSTM 64<br/>+ Dropout]
+        end
+
+        %% Static Branch
+        subgraph Static [Static Branch]
+            direction TB
+            InputStat[Input: 14<br/>features] --> Dense1[Dense 32<br/>+ ReLU]
+        end
+
+        %% Connections to Concatenate
+        LSTM --> Concat
+        Dense1 --> Concat
+
+        %% Merged Layers
+        Concat[Concatenate<br/>96 units] --> Dense2[Dense 32<br/>+ Dropout]
+        Dense2 --> Output[Dense 1<br/>+ Sigmoid]
+    end
+    
+    %% Styling (Optional)
+    style Model fill:#f9f9f9,stroke:#333,stroke-width:2px
+    style Temporal fill:#e6f3ff,stroke:#333,stroke-dasharray: 5 5
+    style Static fill:#fff0e6,stroke:#333,stroke-dasharray: 5 5
+    style Concat fill:#eee,stroke:#333
+    style Output fill:#d4edda,stroke:#333
+```
 
 #### Training Configuration:
 
@@ -1065,12 +1110,6 @@ for f in data_files:
         size_kb = f.stat().st_size / 1024
         md_output += f"* {f.name} ({size_kb:.1f} KB)\n"
 md_output += "\n"
-
-# 4. Figures
-md_output += "**Figures:**\n\n"
-figures = sorted(FIGURES_DIR.glob('*.png'))
-for fig in figures:
-    md_output += f"* {fig.name}\n"
 
 # Render
 display(Markdown(md_output))
