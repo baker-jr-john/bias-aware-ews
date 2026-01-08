@@ -9,7 +9,7 @@ format:
     title: Bias-Aware Early Warning System for Higher Education
     subtitle: Final Summary Report
     date: '2026-01-04'
-    date-modified: '2026-01-05'
+    date-modified: '2026-01-07'
     date-format: long
     author: 
       - name: John Baker
@@ -69,8 +69,6 @@ This research project developed and evaluated a **bias-aware Early Warning Syste
 | Early Prediction | First 25% of course | **10 weeks** (~26% of 33–38 week courses) |
 | Bias Mitigation | Reduce disparities | **All four attributes improved** |
 | Intersectional Fairness | No critical issues | **Validated across 16 subgroups** |
-
-: Key Results {#tbl-key-results}
 
 ### What We Did {.unnumbered}
 
