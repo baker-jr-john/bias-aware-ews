@@ -26,6 +26,11 @@ $text-muted: #6a737b;
   padding-right: 1em;
 }
 
+/* Normalize table sizing for code-generated tables */
+.cell table.table-sm.small {
+  font-size: 1rem;
+}
+
 .hello-quarto-banner h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;

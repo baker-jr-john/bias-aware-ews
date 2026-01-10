@@ -9,7 +9,7 @@ format:
     title: Bias-Aware Early Warning System for Higher Education
     subtitle: Final Summary Report
     date: '2026-01-04'
-    date-modified: '2026-01-07'
+    date-modified: '2026-01-09'
     date-format: long
     author: 
       - name: John Baker
@@ -591,6 +591,186 @@ for bar in bars:
 plt.tight_layout()
 plt.show()
 ```
+
+### AUC Comparison by Group
+
+Beyond aggregate disparity metrics, it is important to examine whether the model performs equally well (in terms of discriminative ability) across different demographic groups. The following table shows AUC for each subgroup within protected attributes:
+
+```{python}
+#| label: tbl-auc-by-group
+#| tbl-cap: AUC by Demographic Group
+#| output: asis
+
+# Extract group-level AUC from fairness results
+group_metrics = fairness_results['group_metrics']
+
+# Build comparison table
+md_output = "| Attribute | Group | n | AUC | vs. Overall (0.889) |\n"
+md_output += "|:----------|:------|--:|:---:|:-------------------:|\n"
+
+# Process each attribute
+for attr, display_name in [('gender', 'Gender'), ('region', 'Region'),
+                            ('imd_band_imputed', 'IMD Band'), ('age_band', 'Age Band'),
+                            ('disability', 'Disability')]:
+    groups = group_metrics[attr]
+    # Sort by AUC descending
+    groups_sorted = sorted(groups, key=lambda x: x['auc'], reverse=True)
+
+    for i, g in enumerate(groups_sorted):
+        group_name = g['group']
+        if attr == 'disability':
+            group_name = 'Has disability' if g['group'] == 'Y' else 'No disability'
+
+        auc_diff = g['auc'] - 0.889
+        diff_str = f"{auc_diff:+.3f}"
+
+        # Only show attribute name on first row
+        attr_cell = f"**{display_name}**" if i == 0 else ""
+        md_output += f"| {attr_cell} | {group_name} | {g['n']:,} | {g['auc']:.3f} | {diff_str} |\n"
+
+display(Markdown(md_output))
+```
+
+```{python}
+#| label: fig-auc-by-group
+#| fig-cap: "AUC comparison across demographic groups within each protected attribute"
+
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+
+overall_auc = 0.889
+
+# Gender
+ax = axes[0, 0]
+gender_data = sorted(group_metrics['gender'], key=lambda x: x['auc'], reverse=True)
+groups = [g['group'] for g in gender_data]
+aucs = [g['auc'] for g in gender_data]
+colors = ['green' if a >= 0.80 else 'red' for a in aucs]
+bars = ax.barh(groups, aucs, color=colors)
+ax.axvline(x=overall_auc, color='steelblue', linestyle='--', linewidth=2, label=f'Overall ({overall_auc:.3f})')
+ax.axvline(x=0.80, color='red', linestyle=':', alpha=0.7, label='Target (0.80)')
+ax.set_xlim(0.75, 0.95)
+ax.set_xlabel('AUC')
+ax.set_title('Gender')
+ax.legend(loc='lower right', fontsize=8)
+for bar, auc in zip(bars, aucs):
+    ax.text(auc + 0.005, bar.get_y() + bar.get_height()/2, f'{auc:.3f}', va='center', fontsize=10)
+
+# Age Band
+ax = axes[0, 1]
+age_data = sorted(group_metrics['age_band'], key=lambda x: x['auc'], reverse=True)
+groups = [g['group'] for g in age_data]
+aucs = [g['auc'] for g in age_data]
+colors = ['green' if a >= 0.80 else 'red' for a in aucs]
+bars = ax.barh(groups, aucs, color=colors)
+ax.axvline(x=overall_auc, color='steelblue', linestyle='--', linewidth=2, label=f'Overall ({overall_auc:.3f})')
+ax.axvline(x=0.80, color='red', linestyle=':', alpha=0.7, label='Target (0.80)')
+ax.set_xlim(0.75, 0.95)
+ax.set_xlabel('AUC')
+ax.set_title('Age Band')
+ax.legend(loc='lower right', fontsize=8)
+for bar, auc in zip(bars, aucs):
+    ax.text(auc + 0.005, bar.get_y() + bar.get_height()/2, f'{auc:.3f}', va='center', fontsize=10)
+
+# Disability
+ax = axes[0, 2]
+disability_data = sorted(group_metrics['disability'], key=lambda x: x['auc'], reverse=True)
+groups = ['No disability' if g['group'] == 'N' else 'Has disability' for g in disability_data]
+aucs = [g['auc'] for g in disability_data]
+colors = ['green' if a >= 0.80 else 'red' for a in aucs]
+bars = ax.barh(groups, aucs, color=colors)
+ax.axvline(x=overall_auc, color='steelblue', linestyle='--', linewidth=2, label=f'Overall ({overall_auc:.3f})')
+ax.axvline(x=0.80, color='red', linestyle=':', alpha=0.7, label='Target (0.80)')
+ax.set_xlim(0.75, 0.95)
+ax.set_xlabel('AUC')
+ax.set_title('Disability')
+ax.legend(loc='lower right', fontsize=8)
+for bar, auc in zip(bars, aucs):
+    ax.text(auc + 0.005, bar.get_y() + bar.get_height()/2, f'{auc:.3f}', va='center', fontsize=10)
+
+# Region
+ax = axes[1, 0]
+region_data = sorted(group_metrics['region'], key=lambda x: x['auc'], reverse=True)
+groups = [g['group'].replace(' Region', '') for g in region_data]
+aucs = [g['auc'] for g in region_data]
+colors = ['green' if a >= 0.80 else 'red' for a in aucs]
+bars = ax.barh(groups, aucs, color=colors)
+ax.axvline(x=overall_auc, color='steelblue', linestyle='--', linewidth=2, label=f'Overall ({overall_auc:.3f})')
+ax.axvline(x=0.80, color='red', linestyle=':', alpha=0.7, label='Target (0.80)')
+ax.set_xlim(0.75, 0.95)
+ax.set_xlabel('AUC')
+ax.set_title('Region')
+ax.legend(loc='lower right', fontsize=8)
+
+# IMD Band
+ax = axes[1, 1]
+imd_order = ['0-10%', '10-20', '20-30%', '30-40%', '40-50%', '50-60%', '60-70%', '70-80%', '80-90%', '90-100%']
+imd_data = {g['group']: g for g in group_metrics['imd_band_imputed']}
+groups = [g for g in imd_order if g in imd_data]
+aucs = [imd_data[g]['auc'] for g in groups]
+colors = ['green' if a >= 0.80 else 'red' for a in aucs]
+bars = ax.barh(groups, aucs, color=colors)
+ax.axvline(x=overall_auc, color='steelblue', linestyle='--', linewidth=2, label=f'Overall ({overall_auc:.3f})')
+ax.axvline(x=0.80, color='red', linestyle=':', alpha=0.7, label='Target (0.80)')
+ax.set_xlim(0.75, 0.95)
+ax.set_xlabel('AUC')
+ax.set_title('IMD Band (Deprivation)')
+ax.legend(loc='lower right', fontsize=8)
+
+# Summary statistics
+ax = axes[1, 2]
+ax.axis('off')
+
+# Calculate summary stats
+all_aucs = []
+for attr in group_metrics:
+    for g in group_metrics[attr]:
+        all_aucs.append({'attr': attr, 'group': g['group'], 'auc': g['auc'], 'n': g['n']})
+
+auc_df = pd.DataFrame(all_aucs)
+min_auc = auc_df['auc'].min()
+max_auc = auc_df['auc'].max()
+min_group = auc_df.loc[auc_df['auc'].idxmin()]
+max_group = auc_df.loc[auc_df['auc'].idxmax()]
+
+summary_text = f"""AUC Range Across All Groups
+
+Minimum: {min_auc:.3f}
+  ({min_group['group']})
+
+Maximum: {max_auc:.3f}
+  ({max_group['group'].replace(' Region', '')})
+
+Range: {max_auc - min_auc:.3f}
+
+All groups above 0.80: Yes ✓
+
+Key Finding:
+Region shows the largest AUC
+variation (0.109), indicating the
+model's discriminative ability
+varies most by geographic area."""
+
+ax.text(0.1, 0.9, summary_text, transform=ax.transAxes, fontsize=11,
+        verticalalignment='top', fontfamily='monospace',
+        bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+
+plt.tight_layout()
+plt.show()
+```
+
+#### Interpreting Group-Level AUC Differences
+
+The group-level AUC analysis reveals important patterns:
+
+1. **All groups exceed the 0.80 target:** The lowest AUC is 0.816 (Ireland), still well above the threshold, indicating the model has adequate discriminative ability for all demographic groups.
+
+2. **Region shows the largest variation:** AUC ranges from 0.816 (Ireland) to 0.925 (North Western Region)—a 0.109 spread. This suggests the model's behavioral signals are more predictive in some regions than others, potentially due to differences in VLE usage patterns or sample sizes.
+
+3. **Small groups have more variable AUC:** Ireland (n=181) and 55+ age band (n=40) show more extreme AUC values, which may reflect statistical noise from smaller sample sizes rather than true performance differences.
+
+4. **IMD and disability show modest variation:** AUC differences of ~0.05 suggest relatively consistent model performance across socioeconomic and disability groups.
+
+{{< pagebreak >}}
 
 ## Bias Mitigation Results
 

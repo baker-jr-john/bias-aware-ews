@@ -186,3 +186,8 @@ img.footer-logo {
   color: #ffffff;
 }
 
+/* Normalize table sizing for code-generated tables */
+.cell table.table-sm.small {
+  font-size: 1rem;
+}
+
