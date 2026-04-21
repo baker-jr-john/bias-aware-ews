@@ -9,7 +9,7 @@ format:
     title: Bias-Aware Early Warning System for Higher Education
     subtitle: Final Summary Report
     date: '2026-01-04'
-    date-modified: '2026-01-09'
+    date-modified: '2026-03-28'
     date-format: long
     author: 
       - name: John Baker
@@ -76,14 +76,14 @@ This research project developed and evaluated a **bias-aware Early Warning Syste
 
 2. **Audited fairness** across five protected attributes using four metrics (SPD, EOD, Equalized Odds, ABROCA), finding significant disparities for region (4/4 violations), IMD band, disability, and age
 
-3. **Mitigated bias** using attribute-appropriate techniques: threshold optimization for large groups (region, IMD, age) and reweighting for underrepresented groups (disability), reducing Equal Opportunity Difference to near-zero while maintaining AUC
+3. **Mitigated bias** using attribute-appropriate techniques from all three mitigation families: threshold optimization (post-processing) for large groups (region, IMD, age), reweighting (pre-processing) for underrepresented groups (disability), and adversarial debiasing (in-processing) as a viable alternative for all attributes, reducing Equal Opportunity Difference to near-zero while maintaining AUC
 
 4. **Validated intersectional fairness** across 16 demographic subgroups, confirming no severe compounding disparities and AUC > 0.80 for all intersections
 
 ### Key Findings {.unnumbered}
 
 - **Regional bias was most severe:** Students in Scotland, Wales, and London were flagged at higher rates than equally at-risk students in Ireland and Southern England
-- **Mitigation approach matters:** Post-processing (threshold optimization) works for well-represented groups; pre-processing (reweighting) is needed for minorities like students with disabilities (9% of data)
+- **Mitigation approach matters:** Post-processing (threshold optimization) works for well-represented groups; pre-processing (reweighting) is needed for minorities like students with disabilities (9% of data); in-processing (adversarial debiasing) provides a viable alternative across all group sizes
 - **Selection rate disparities reflect real risk differences:** The 0.266 range in intersectional selection rates mirror the underlying at-risk rate variation, not model discrimination
 
 {{< pagebreak >}}
@@ -133,6 +133,21 @@ with open(DATA_DIR / 'mitigation_results_age.json', 'r') as f:
 
 with open(DATA_DIR / 'intersectional_results.json', 'r') as f:
     intersectional_results = json.load(f)
+
+with open(DATA_DIR / 'fairness_results_with_ci.json', 'r') as f:
+    fairness_results_ci = json.load(f)
+
+with open(DATA_DIR / 'mitigation_results_adversarial_region.json', 'r') as f:
+    mitigation_adversarial_region = json.load(f)
+
+with open(DATA_DIR / 'mitigation_results_adversarial_imd_band.json', 'r') as f:
+    mitigation_adversarial_imd = json.load(f)
+
+with open(DATA_DIR / 'mitigation_results_adversarial_disability.json', 'r') as f:
+    mitigation_adversarial_disability = json.load(f)
+
+with open(DATA_DIR / 'mitigation_results_adversarial_age_band.json', 'r') as f:
+    mitigation_adversarial_age = json.load(f)
 
 predictions = pd.read_csv(DATA_DIR / 'predictions_baseline.csv')
 static_df = pd.read_csv(DATA_DIR / 'features_static.csv')
@@ -487,7 +502,7 @@ This regional bias meant students in Scotland, Wales, and London were more likel
 
 ```{python}
 #| label: tbl-audit
-#| tbl-cap: Fairness Audit Results
+#| tbl-cap: Fairness Audit Results (95% CIs from 1,000 bootstrap samples)
 #| output: asis
 
 # 1. Define thresholds
@@ -498,7 +513,13 @@ thresholds = {
     'ABROCA': 0.03
 }
 
-# 2. Process the data
+# 2. Build CI lookup from bootstrap results
+ci_lookup = {}
+for item in fairness_results_ci['summary']:
+    attr = item['Attribute'].replace('_imputed', '')
+    ci_lookup[attr] = item
+
+# 3. Process the data
 fairness_summary = []
 for item in fairness_results['summary']:
     attr = item['Attribute'].replace('_imputed', '')
@@ -509,12 +530,18 @@ for item in fairness_results['summary']:
 
     violations = 4 - sum([spd_fair, eod_fair, eqodds_fair, abroca_fair])
 
+    ci = ci_lookup.get(attr, {})
+
     fairness_summary.append({
         'Attribute': attr,
         'SPD': item['SPD'],
         'SPD_Fair': spd_fair,
+        'SPD_CI_low': ci.get('SPD_CI_low', None),
+        'SPD_CI_high': ci.get('SPD_CI_high', None),
         'EOD': item['EOD'],
         'EOD_Fair': eod_fair,
+        'EOD_CI_low': ci.get('EOD_CI_low', None),
+        'EOD_CI_high': ci.get('EOD_CI_high', None),
         'EqOdds': item['EqOdds'],
         'EqOdds_Fair': eqodds_fair,
         'ABROCA': item['ABROCA'],
@@ -526,13 +553,14 @@ for item in fairness_results['summary']:
 fairness_df = pd.DataFrame(fairness_summary)
 # ------------------------------------------------------------------
 
-# 3. Build the Markdown Output
+# 4. Build the Markdown Output
 # Part A: The Thresholds Line (Text)
 markdown_output = f"**Thresholds:** |SPD| < {thresholds['SPD']}, |EOD| < {thresholds['EOD']}, EqOdds < {thresholds['EqOdds']}, ABROCA < {thresholds['ABROCA']}\n\n"
+markdown_output += "**95% CIs** from 1,000 bootstrap samples (test set, n=4,889)\n\n"
 
 # Part B: The Table Header
-markdown_output += "| Attribute | SPD | EOD | EqOdds | ABROCA | Status |\n"
-markdown_output += "|:----------|:---:|:---:|:------:|:------:|:-------|\n"
+markdown_output += "| Attribute | SPD | SPD 95% CI | EOD | EOD 95% CI | EqOdds | ABROCA | Status |\n"
+markdown_output += "|:----------|:---:|:----------:|:---:|:----------:|:------:|:------:|:-------|\n"
 
 # Helper function for formatting values with checkmarks
 def fmt(val, is_fair, is_signed=True):
@@ -542,15 +570,28 @@ def fmt(val, is_fair, is_signed=True):
     else:
         return f"{val:.3f} {symbol}"
 
+def fmt_ci(low, high):
+    if low is None or high is None:
+        return "—"
+    return f"[{low:+.3f}, {high:+.3f}]"
+
 # Part C: The Table Rows
 for row in fairness_summary:
     status = "**FAIR**" if row['Violations'] == 0 else f"UNFAIR ({row['Violations']}/4)"
-    
-    # Construct row string
-    line = f"| {row['Attribute']} | {fmt(row['SPD'], row['SPD_Fair'])} | {fmt(row['EOD'], row['EOD_Fair'])} | {fmt(row['EqOdds'], row['EqOdds_Fair'], False)} | {fmt(row['ABROCA'], row['ABROCA_Fair'], False)} | {status} |\n"
+    spd_ci = fmt_ci(row['SPD_CI_low'], row['SPD_CI_high'])
+    eod_ci = fmt_ci(row['EOD_CI_low'], row['EOD_CI_high'])
+
+    # Flag wide CIs for age_band (small 55≤ subgroup)
+    if row['Attribute'] == 'age_band':
+        spd_ci += " *"
+        eod_ci += " *"
+
+    line = f"| {row['Attribute']} | {fmt(row['SPD'], row['SPD_Fair'])} | {spd_ci} | {fmt(row['EOD'], row['EOD_Fair'])} | {eod_ci} | {fmt(row['EqOdds'], row['EqOdds_Fair'], False)} | {fmt(row['ABROCA'], row['ABROCA_Fair'], False)} | {status} |\n"
     markdown_output += line
 
-# 4. Render everything
+markdown_output += "\n\\* Wide CIs reflect small 55≤ subgroup (n=40); point estimates stable for all larger groups.\n"
+
+# 5. Render everything
 display(Markdown(markdown_output))
 ```
 
@@ -774,18 +815,19 @@ The group-level AUC analysis reveals important patterns:
 
 ## Bias Mitigation Results
 
-We applied three mitigation techniques from the [AI Fairness 360 (AIF360) toolkit](https://ai-fairness-360.org/){.external target="_blank"}:
+We applied four mitigation techniques spanning all three mitigation families:
 
-1. **Reweighting** (Pre-processing): Adjusts training sample weights
-2. **Threshold Optimization** (Post-processing): Group-specific classification thresholds
-3. **Reject Option Classification** (Post-processing): Adjusts predictions near the decision boundary
+1. **Reweighting** (Pre-processing): Adjusts training sample weights so each protected-group/outcome combination receives equal representation ([AIF360](https://ai-fairness-360.org/){.external target="_blank"})
+2. **Adversarial Debiasing** (In-processing): Extends the LSTM with an adversary branch that predicts the protected attribute from the model's learned representations; the main model is penalized when the adversary succeeds, forcing fair representations (PyTorch implementation)
+3. **Threshold Optimization** (Post-processing): Sets group-specific classification thresholds to equalize true-positive rates
+4. **Reject Option Classification** (Post-processing): Adjusts predictions near the decision boundary to reduce disparities ([AIF360](https://ai-fairness-360.org/){.external target="_blank"})
 
 ```{python}
 #| label: tbl-mitigation-results
 #| tbl-cap: Bias Mitigation Results
 #| output: asis
 
-# 1. Prepare the data (Same logic as before)
+# 1. Prepare the data — best approach per attribute
 mitigation_summary = []
 
 for attr, results in [('Region', mitigation_region),
@@ -813,21 +855,15 @@ for attr, results in [('Region', mitigation_region),
 mitigation_df = pd.DataFrame(mitigation_summary)
 # ------------------------------------------------------------------
 
-# 2. Build the Markdown Table
-# Header
-table_md = "| Attribute | Approach | AUC (Base -> Final) | SPD (Base -> Final) | EOD (Base -> Final) |\n"
+# 2. Build the Markdown Table — shows best approach + adversarial for comparison
+table_md = "| Attribute | Approach | AUC (Base → Final) | SPD (Base → Final) | EOD (Base → Final) |\n"
 table_md += "|:----------|:---------|:-------------------:|:-------------------:|:-------------------:|\n"
 
-# Rows
+# Best approach rows
 for row in mitigation_summary:
-    # Format the transitions: "0.123 -> 0.045"
-    auc_change = f"{row['Baseline_AUC']:.4f} -> {row['Mitigated_AUC']:.4f}"
-
-    # Use signed formatting for fairness metrics (+0.050)
-    spd_change = f"{row['Baseline_SPD']:+.3f} -> {row['Mitigated_SPD']:+.3f}"
-    eod_change = f"{row['Baseline_EOD']:+.3f} -> {row['Mitigated_EOD']:+.3f}"
-    
-    # Construct the row
+    auc_change = f"{row['Baseline_AUC']:.4f} → {row['Mitigated_AUC']:.4f}"
+    spd_change = f"{row['Baseline_SPD']:+.3f} → {row['Mitigated_SPD']:+.3f}"
+    eod_change = f"{row['Baseline_EOD']:+.3f} → {row['Mitigated_EOD']:+.3f}"
     table_md += f"| **{row['Attribute']}** | {row['Best_Approach']} | {auc_change} | {spd_change} | {eod_change} |\n"
 
 # 3. Render
@@ -886,15 +922,30 @@ plt.show()
 
 ```{python}
 #| label: tbl-mitigation-summary
-#| tbl-cap: Post-Mitigation Fairness Metrics
+#| tbl-cap: Post-Mitigation Fairness Metrics (all three technique families evaluated)
 #| output: asis
 
-# Build the Markdown Table
+# Build the Markdown Table — includes best approach AND adversarial for each attribute
 table_md = "| Attribute | Approach | AUC | SPD | EOD |\n"
 table_md += "|:----------|:---------|:---:|:---:|:---:|\n"
 
+# Pair each attribute with its adversarial result
+adv_results = [
+    ('Region', mitigation_adversarial_region),
+    ('IMD Band', mitigation_adversarial_imd),
+    ('Disability', mitigation_adversarial_disability),
+    ('Age Band', mitigation_adversarial_age),
+]
+adv_lookup = {attr: res for attr, res in adv_results}
+
 for _, row in mitigation_df.iterrows():
-    table_md += f"| **{row['Attribute']}** | {row['Best_Approach']} | {row['Mitigated_AUC']:.4f} | {row['Mitigated_SPD']:+.3f} | {row['Mitigated_EOD']:+.3f} |\n"
+    # Best approach row
+    table_md += f"| **{row['Attribute']}** | {row['Best_Approach']} | {row['Mitigated_AUC']:.3f} | {row['Mitigated_SPD']:+.3f} | {row['Mitigated_EOD']:+.3f} |\n"
+    # Adversarial row
+    adv = adv_lookup[row['Attribute']]['approaches']['adversarial']
+    table_md += f"| | Adversarial (in-proc.) | {adv['auc']:.3f} | {adv['spd']:+.3f} | {adv['eod']:+.3f} |\n"
+
+table_md += "\nAll approaches achieve |SPD| < 0.10 and |EOD| < 0.10. Baseline AUC = 0.889.\n"
 
 display(Markdown(table_md))
 ```
@@ -909,6 +960,7 @@ display(Markdown(table_md))
 | IMD Band | 3,218 (66%) | Threshold Optimization | Large groups; post-processing sufficient |
 | Age Band | 3,442 (70%) | Threshold Optimization | Large groups; threshold adjustment adequate |
 | Disability | 457 (9%) | Reweighting | Small minority; needs pre-processing |
+| Any (in-proc.) | 457–3,649 (9–75%) | Adversarial Debiasing | Works across group sizes; all thresholds met |
 
 : Mitigation Rationale {#tbl-approaches}
 
@@ -927,7 +979,15 @@ display(Markdown(table_md))
 - Although it slightly reduces AUC (0.889 → 0.887), it achieves substantially better Equalized Odds (0.027 vs 0.051)
 - The trade-off is worthwhile: a 0.2% AUC reduction for a 48% improvement in fairness.
 
-**Key insight:** Pre-processing (reweighting) addresses representation imbalance at the source, while post-processing (threshold optimization) works when the model already has adequate signal for all groups.
+#### Why Adversarial Debiasing is a viable alternative:
+
+- Adversarial debiasing extends the LSTM with a second "adversary" network that tries to predict the protected attribute from the model's internal representations
+- During training, the main model is penalized when the adversary succeeds, forcing it to learn representations that are predictive of student risk but uninformative of group membership
+- This in-processing approach achieved fairness thresholds (|SPD| < 0.10, |EOD| < 0.10) for all four unfair attributes
+- While not selected as the best approach for any individual attribute, it demonstrates that in-processing methods provide a viable single-technique alternative that works across all group sizes
+- The adversarial strength parameter (λ) was selected via grid search over {0.01, 0.1, 0.5, 1.0} for each attribute
+
+**Key insight:** Pre-processing (reweighting) addresses representation imbalance at the source, post-processing (threshold optimization) works when the model already has adequate signal for all groups, and in-processing (adversarial debiasing) offers a universal alternative by learning fair representations directly.
 
 ## Intersectional Fairness Analysis
 
@@ -1139,8 +1199,9 @@ The model slightly *under-predicts* risk for both extremes, which is conservativ
    - Socioeconomic factors (IMD) contribute to prediction disparities
 
 3. **Mitigation Effectiveness**
-   - Threshold Optimization: Best for Region, IMD, Age
-   - Reweighting: Best for Disability
+   - Threshold Optimization (post-processing): Best for Region, IMD, Age
+   - Reweighting (pre-processing): Best for Disability
+   - Adversarial Debiasing (in-processing): Viable alternative for all attributes
    - All mitigations maintained an AUC above the 0.80 target
    - EOD reduced to near-zero for all attributes
 
@@ -1155,6 +1216,7 @@ The model slightly *under-predicts* risk for both extremes, which is conservativ
 
 - Use Threshold Optimization for Region, IMD Band, and Age Band
 - Use the Reweighted model for Disability fairness
+- Consider Adversarial Debiasing as a single-technique alternative across all attributes
 - Apply group-specific thresholds at prediction time
 
 #### For Institutions:
@@ -1165,8 +1227,8 @@ The model slightly *under-predicts* risk for both extremes, which is conservativ
 
 #### For Future Research:
 
-- Explore in-processing fairness constraints (adversarial debiasing)
 - Investigate causal fairness approaches
+- Explore longitudinal fairness monitoring (whether fairness degrades over academic cohorts)
 - Validate on additional institutions and student populations
 
 ## Limitations
@@ -1229,6 +1291,7 @@ The LSTM model relies on observable learning platform behaviors and demographic 
 - **Intersectionality depth:** Three-way intersections had limited statistical power due to small subgroup sizes.
 - **Proxy discrimination:** Even after mitigation, the model may encode protected attributes through correlated features (e.g., VLE access patterns correlating with socioeconomic status).
 - **Fairness metric choice:** Different fairness definitions (statistical parity vs. equalized odds) can conflict; our threshold choices reflect value judgments.
+- **Uncertainty:** Bootstrap 95% CIs for SPD and EOD are reported in the fairness audit table (1,000 iterations). Most metrics show stable intervals; the notably wide CIs for age_band reflect the small 55≤ subgroup (n=40). AUC and post-mitigation metrics remain point estimates.
 
 ### Implications for Deployment
 
@@ -1248,7 +1311,7 @@ This capstone project successfully developed a **bias-aware Early Warning System
 
 2. **Comprehensive Fairness Audit:** Identified regional and socioeconomic disparities in model predictions
 
-3. **Effective Bias Mitigation:** Reduced disparities using threshold optimization and reweighting while maintaining model performance
+3. **Effective Bias Mitigation:** Reduced disparities using all three mitigation families (pre-processing reweighting, in-processing adversarial debiasing, and post-processing threshold optimization) while maintaining model performance
 
 4. **Intersectional Validation:** Confirmed no severe disparities across demographic subgroups
 

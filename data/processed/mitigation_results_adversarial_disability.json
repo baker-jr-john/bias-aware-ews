@@ -1,0 +1,68 @@
+{
+  "target_attribute": "disability",
+  "method": "adversarial_debiasing",
+  "best_lambda": 1.0,
+  "privileged_groups": [
+    "N"
+  ],
+  "unprivileged_groups": [
+    "Y"
+  ],
+  "lambda_search": [
+    {
+      "lambda": 0.01,
+      "val_auc": 0.8958101539292465,
+      "val_eod": 0.0718777023318069,
+      "val_spd": 0.11513608514353668
+    },
+    {
+      "lambda": 0.1,
+      "val_auc": 0.8958303233864434,
+      "val_eod": 0.05994721288547,
+      "val_spd": 0.1013393999608605
+    },
+    {
+      "lambda": 0.5,
+      "val_auc": 0.8947734944639483,
+      "val_eod": 0.04213344161459398,
+      "val_spd": 0.07869680410664015
+    },
+    {
+      "lambda": 1.0,
+      "val_auc": 0.8942165136375911,
+      "val_eod": 0.03752848022739064,
+      "val_spd": 0.07844277348748291
+    }
+  ],
+  "approaches": {
+    "baseline": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7384682332463012,
+      "privileged_fpr": 0.10543580131208997,
+      "privileged_selection_rate": 0.43366425992779783,
+      "privileged_auc": 0.889171995043977,
+      "unprivileged_tpr": 0.7915194346289752,
+      "unprivileged_fpr": 0.1781609195402299,
+      "unprivileged_selection_rate": 0.5579868708971554,
+      "unprivileged_auc": 0.8769546322245237,
+      "spd": 0.12432261096935754,
+      "eod": 0.05305120138267405,
+      "eq_odds": 0.12577631961081398
+    },
+    "adversarial": {
+      "auc": 0.8878055507619003,
+      "privileged_tpr": 0.7419495213228895,
+      "privileged_fpr": 0.1176194939081537,
+      "privileged_selection_rate": 0.44133574007220217,
+      "privileged_auc": 0.8886982935326182,
+      "unprivileged_tpr": 0.7420494699646644,
+      "unprivileged_fpr": 0.13793103448275862,
+      "unprivileged_selection_rate": 0.5120350109409191,
+      "unprivileged_auc": 0.874436456683319,
+      "spd": 0.07069927086871691,
+      "eod": 9.994864177487184e-05,
+      "eq_odds": 0.020411489216379794
+    }
+  },
+  "recommendation": "Adversarial Debiasing"
+}

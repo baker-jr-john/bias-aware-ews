@@ -1,0 +1,69 @@
+{
+  "target_attribute": "age_band",
+  "method": "adversarial_debiasing",
+  "best_lambda": 0.5,
+  "privileged_groups": [
+    "35-55"
+  ],
+  "unprivileged_groups": [
+    "0-35",
+    "55<="
+  ],
+  "lambda_search": [
+    {
+      "lambda": 0.01,
+      "val_auc": 0.8954023764515258,
+      "val_eod": 0.07993699110332131,
+      "val_spd": 0.11031642330768465
+    },
+    {
+      "lambda": 0.1,
+      "val_auc": 0.8949983965703484,
+      "val_eod": 0.06434007055221536,
+      "val_spd": 0.09336994786856251
+    },
+    {
+      "lambda": 0.5,
+      "val_auc": 0.8946338273021874,
+      "val_eod": 0.05465578062254561,
+      "val_spd": 0.08433554812144578
+    },
+    {
+      "lambda": 1.0,
+      "val_auc": 0.8941024169592224,
+      "val_eod": 0.05539901936857983,
+      "val_spd": 0.08578797960047324
+    }
+  ],
+  "approaches": {
+    "baseline": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7048710601719198,
+      "privileged_fpr": 0.08411214953271028,
+      "privileged_selection_rate": 0.3835521769177609,
+      "privileged_auc": 0.8786366540296326,
+      "unprivileged_tpr": 0.7588953797132236,
+      "unprivileged_fpr": 0.12379730596536241,
+      "unprivileged_selection_rate": 0.47123765252760025,
+      "unprivileged_auc": 0.8919902834074296,
+      "spd": 0.08768547560983936,
+      "eod": 0.05402431954130382,
+      "eq_odds": 0.09370947597395596
+    },
+    "adversarial": {
+      "auc": 0.888273155985246,
+      "privileged_tpr": 0.7249283667621776,
+      "privileged_fpr": 0.11748998664886515,
+      "privileged_selection_rate": 0.4105044920525225,
+      "privileged_auc": 0.8791052826882834,
+      "unprivileged_tpr": 0.7594264471587892,
+      "unprivileged_fpr": 0.14304041051956382,
+      "unprivileged_selection_rate": 0.48024404416037186,
+      "unprivileged_auc": 0.8912711792524655,
+      "spd": 0.06973955210784938,
+      "eod": 0.03449808039661151,
+      "eq_odds": 0.06004850426731018
+    }
+  },
+  "recommendation": "Adversarial Debiasing"
+}

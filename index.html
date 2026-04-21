@@ -307,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
   
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="final_summary_report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -348,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 9, 2026</p>
+      <p class="date-modified">March 28, 2026</p>
     </div>
   </div>
     
@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li><p><strong>Built an early prediction model</strong> using a dual-branch LSTM architecture that combines 10 weeks of VLE engagement patterns with static demographic features, enabling intervention while 75% of the course remains</p></li>
 <li><p><strong>Audited fairness</strong> across five protected attributes using four metrics (SPD, EOD, Equalized Odds, ABROCA), finding significant disparities for region (4/4 violations), IMD band, disability, and age</p></li>
-<li><p><strong>Mitigated bias</strong> using attribute-appropriate techniques: threshold optimization for large groups (region, IMD, age) and reweighting for underrepresented groups (disability), reducing Equal Opportunity Difference to near-zero while maintaining AUC</p></li>
+<li><p><strong>Mitigated bias</strong> using attribute-appropriate techniques from all three mitigation families: threshold optimization (post-processing) for large groups (region, IMD, age), reweighting (pre-processing) for underrepresented groups (disability), and adversarial debiasing (in-processing) as a viable alternative for all attributes, reducing Equal Opportunity Difference to near-zero while maintaining AUC</p></li>
 <li><p><strong>Validated intersectional fairness</strong> across 16 demographic subgroups, confirming no severe compounding disparities and AUC &gt; 0.80 for all intersections</p></li>
 </ol>
 </section>
@@ -414,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="unnumbered anchored" data-anchor-id="key-findings">Key Findings</h3>
 <ul>
 <li><strong>Regional bias was most severe:</strong> Students in Scotland, Wales, and London were flagged at higher rates than equally at-risk students in Ireland and Southern England</li>
-<li><strong>Mitigation approach matters:</strong> Post-processing (threshold optimization) works for well-represented groups; pre-processing (reweighting) is needed for minorities like students with disabilities (9% of data)</li>
+<li><strong>Mitigation approach matters:</strong> Post-processing (threshold optimization) works for well-represented groups; pre-processing (reweighting) is needed for minorities like students with disabilities (9% of data); in-processing (adversarial debiasing) provides a viable alternative across all group sizes</li>
 <li><strong>Selection rate disparities reflect real risk differences:</strong> The 0.266 range in intersectional selection rates mirror the underlying at-risk rate variation, not model discrimination</li>
 </ul>
 <div style="page-break-after: always;"></div>
@@ -464,8 +464,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'intersectional_results.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    intersectional_results <span class="op">=</span> json.load(f)</span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'predictions_baseline.csv'</span>)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>static_df <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'features_static.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'fairness_results_with_ci.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    fairness_results_ci <span class="op">=</span> json.load(f)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_adversarial_region.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    mitigation_adversarial_region <span class="op">=</span> json.load(f)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_adversarial_imd_band.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    mitigation_adversarial_imd <span class="op">=</span> json.load(f)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_adversarial_disability.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    mitigation_adversarial_disability <span class="op">=</span> json.load(f)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(DATA_DIR <span class="op">/</span> <span class="st">'mitigation_results_adversarial_age_band.json'</span>, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    mitigation_adversarial_age <span class="op">=</span> json.load(f)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'predictions_baseline.csv'</span>)</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>static_df <span class="op">=</span> pd.read_csv(DATA_DIR <span class="op">/</span> <span class="st">'features_static.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div style="page-break-after: always;"></div>
@@ -988,74 +1003,113 @@ Table&nbsp;3: Fairness Threshold Interpretation
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ABROCA'</span>: <span class="fl">0.03</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Process the data</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>fairness_summary <span class="op">=</span> []</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> fairness_results[<span class="st">'summary'</span>]:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build CI lookup from bootstrap results</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ci_lookup <span class="op">=</span> {}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> fairness_results_ci[<span class="st">'summary'</span>]:</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    attr <span class="op">=</span> item[<span class="st">'Attribute'</span>].replace(<span class="st">'_imputed'</span>, <span class="st">''</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    spd_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'SPD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'SPD'</span>]</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    eod_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'EOD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'EOD'</span>]</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    eqodds_fair <span class="op">=</span> item[<span class="st">'EqOdds'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'EqOdds'</span>]</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    abroca_fair <span class="op">=</span> item[<span class="st">'ABROCA'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'ABROCA'</span>]</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    violations <span class="op">=</span> <span class="dv">4</span> <span class="op">-</span> <span class="bu">sum</span>([spd_fair, eod_fair, eqodds_fair, abroca_fair])</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    fairness_summary.append({</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Attribute'</span>: attr,</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD'</span>: item[<span class="st">'SPD'</span>],</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD_Fair'</span>: spd_fair,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD'</span>: item[<span class="st">'EOD'</span>],</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD_Fair'</span>: eod_fair,</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds'</span>: item[<span class="st">'EqOdds'</span>],</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds_Fair'</span>: eqodds_fair,</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA'</span>: item[<span class="st">'ABROCA'</span>],</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA_Fair'</span>: abroca_fair,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Violations'</span>: violations</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># --- CRITICAL RESTORATION: Create the DataFrame for the next plot ---</span></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>fairness_df <span class="op">=</span> pd.DataFrame(fairness_summary)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Build the Markdown Output</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Part A: The Thresholds Line (Text)</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">=</span> <span class="ss">f"**Thresholds:** |SPD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'SPD'</span>]<span class="sc">}</span><span class="ss">, |EOD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EOD'</span>]<span class="sc">}</span><span class="ss">, EqOdds &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EqOdds'</span>]<span class="sc">}</span><span class="ss">, ABROCA &lt; </span><span class="sc">{</span>thresholds[<span class="st">'ABROCA'</span>]<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Part B: The Table Header</span></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"| Attribute | SPD | EOD | EqOdds | ABROCA | Status |</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"|:----------|:---:|:---:|:------:|:------:|:-------|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    ci_lookup[attr] <span class="op">=</span> item</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Process the data</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>fairness_summary <span class="op">=</span> []</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> item <span class="kw">in</span> fairness_results[<span class="st">'summary'</span>]:</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    attr <span class="op">=</span> item[<span class="st">'Attribute'</span>].replace(<span class="st">'_imputed'</span>, <span class="st">''</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    spd_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'SPD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'SPD'</span>]</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    eod_fair <span class="op">=</span> <span class="bu">abs</span>(item[<span class="st">'EOD'</span>]) <span class="op">&lt;</span> thresholds[<span class="st">'EOD'</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    eqodds_fair <span class="op">=</span> item[<span class="st">'EqOdds'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'EqOdds'</span>]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    abroca_fair <span class="op">=</span> item[<span class="st">'ABROCA'</span>] <span class="op">&lt;</span> thresholds[<span class="st">'ABROCA'</span>]</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    violations <span class="op">=</span> <span class="dv">4</span> <span class="op">-</span> <span class="bu">sum</span>([spd_fair, eod_fair, eqodds_fair, abroca_fair])</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    ci <span class="op">=</span> ci_lookup.get(attr, {})</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    fairness_summary.append({</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Attribute'</span>: attr,</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD'</span>: item[<span class="st">'SPD'</span>],</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD_Fair'</span>: spd_fair,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD_CI_low'</span>: ci.get(<span class="st">'SPD_CI_low'</span>, <span class="va">None</span>),</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">'SPD_CI_high'</span>: ci.get(<span class="st">'SPD_CI_high'</span>, <span class="va">None</span>),</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD'</span>: item[<span class="st">'EOD'</span>],</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD_Fair'</span>: eod_fair,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD_CI_low'</span>: ci.get(<span class="st">'EOD_CI_low'</span>, <span class="va">None</span>),</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EOD_CI_high'</span>: ci.get(<span class="st">'EOD_CI_high'</span>, <span class="va">None</span>),</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds'</span>: item[<span class="st">'EqOdds'</span>],</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>        <span class="st">'EqOdds_Fair'</span>: eqodds_fair,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA'</span>: item[<span class="st">'ABROCA'</span>],</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        <span class="st">'ABROCA_Fair'</span>: abroca_fair,</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Violations'</span>: violations</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    })</span>
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper function for formatting values with checkmarks</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fmt(val, is_fair, is_signed<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    symbol <span class="op">=</span> <span class="st">"✓"</span> <span class="cf">if</span> is_fair <span class="cf">else</span> <span class="st">"✗"</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_signed:</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:+.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Part C: The Table Rows</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fairness_summary:</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">"**FAIR**"</span> <span class="cf">if</span> row[<span class="st">'Violations'</span>] <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f"UNFAIR (</span><span class="sc">{</span>row[<span class="st">'Violations'</span>]<span class="sc">}</span><span class="ss">/4)"</span></span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct row string</span></span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="ss">f"| </span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'SPD'</span>], row[<span class="st">'SPD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EOD'</span>], row[<span class="st">'EOD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EqOdds'</span>], row[<span class="st">'EqOdds_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'ABROCA'</span>], row[<span class="st">'ABROCA_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>status<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    markdown_output <span class="op">+=</span> line</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Render everything</span></span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>display(Markdown(markdown_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co"># --- CRITICAL RESTORATION: Create the DataFrame for the next plot ---</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>fairness_df <span class="op">=</span> pd.DataFrame(fairness_summary)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Build the Markdown Output</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Part A: The Thresholds Line (Text)</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">=</span> <span class="ss">f"**Thresholds:** |SPD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'SPD'</span>]<span class="sc">}</span><span class="ss">, |EOD| &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EOD'</span>]<span class="sc">}</span><span class="ss">, EqOdds &lt; </span><span class="sc">{</span>thresholds[<span class="st">'EqOdds'</span>]<span class="sc">}</span><span class="ss">, ABROCA &lt; </span><span class="sc">{</span>thresholds[<span class="st">'ABROCA'</span>]<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"**95% CIs** from 1,000 bootstrap samples (test set, n=4,889)</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Part B: The Table Header</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"| Attribute | SPD | SPD 95% CI | EOD | EOD 95% CI | EqOdds | ABROCA | Status |</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"|:----------|:---:|:----------:|:---:|:----------:|:------:|:------:|:-------|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper function for formatting values with checkmarks</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fmt(val, is_fair, is_signed<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    symbol <span class="op">=</span> <span class="st">"✓"</span> <span class="cf">if</span> is_fair <span class="cf">else</span> <span class="st">"✗"</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_signed:</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:+.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:.3f}</span><span class="ss"> </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fmt_ci(low, high):</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> low <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> high <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"—"</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"[</span><span class="sc">{</span>low<span class="sc">:+.3f}</span><span class="ss">, </span><span class="sc">{</span>high<span class="sc">:+.3f}</span><span class="ss">]"</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Part C: The Table Rows</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> fairness_summary:</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">"**FAIR**"</span> <span class="cf">if</span> row[<span class="st">'Violations'</span>] <span class="op">==</span> <span class="dv">0</span> <span class="cf">else</span> <span class="ss">f"UNFAIR (</span><span class="sc">{</span>row[<span class="st">'Violations'</span>]<span class="sc">}</span><span class="ss">/4)"</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    spd_ci <span class="op">=</span> fmt_ci(row[<span class="st">'SPD_CI_low'</span>], row[<span class="st">'SPD_CI_high'</span>])</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    eod_ci <span class="op">=</span> fmt_ci(row[<span class="st">'EOD_CI_low'</span>], row[<span class="st">'EOD_CI_high'</span>])</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flag wide CIs for age_band (small 55≤ subgroup)</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">'Attribute'</span>] <span class="op">==</span> <span class="st">'age_band'</span>:</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>        spd_ci <span class="op">+=</span> <span class="st">" *"</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>        eod_ci <span class="op">+=</span> <span class="st">" *"</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="ss">f"| </span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'SPD'</span>], row[<span class="st">'SPD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>spd_ci<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EOD'</span>], row[<span class="st">'EOD_Fair'</span>])<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>eod_ci<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'EqOdds'</span>], row[<span class="st">'EqOdds_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>fmt(row[<span class="st">'ABROCA'</span>], row[<span class="st">'ABROCA_Fair'</span>], <span class="va">False</span>)<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>status<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>    markdown_output <span class="op">+=</span> line</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>markdown_output <span class="op">+=</span> <span class="st">"</span><span class="ch">\n\\</span><span class="st">* Wide CIs reflect small 55≤ subgroup (n=40); point estimates stable for all larger groups.</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Render everything</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>display(Markdown(markdown_output))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="tbl-audit" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="6">
+<div id="tbl-audit" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap="Fairness Audit Results (95% CIs from 1,000 bootstrap samples)" data-execution_count="6">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;4: Fairness Audit Results
+Table&nbsp;4: * Wide CIs reflect small 55≤ subgroup (n=40); point estimates stable for all larger groups.
 </figcaption>
 <div aria-describedby="tbl-audit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <p><strong>Thresholds:</strong> |SPD| &lt; 0.1, |EOD| &lt; 0.1, EqOdds &lt; 0.1, ABROCA &lt; 0.03</p>
+<p><strong>95% CIs</strong> from 1,000 bootstrap samples (test set, n=4,889)</p>
 <table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Attribute</th>
 <th style="text-align: center;">SPD</th>
+<th style="text-align: center;">SPD 95% CI</th>
 <th style="text-align: center;">EOD</th>
+<th style="text-align: center;">EOD 95% CI</th>
 <th style="text-align: center;">EqOdds</th>
 <th style="text-align: center;">ABROCA</th>
 <th style="text-align: left;">Status</th>
@@ -1065,7 +1119,9 @@ Table&nbsp;4: Fairness Audit Results
 <tr class="odd">
 <td style="text-align: left;">gender</td>
 <td style="text-align: center;">+0.061 ✓</td>
+<td style="text-align: center;">[+0.033, +0.088]</td>
 <td style="text-align: center;">+0.062 ✓</td>
+<td style="text-align: center;">[+0.027, +0.093]</td>
 <td style="text-align: center;">0.077 ✓</td>
 <td style="text-align: center;">0.018 ✓</td>
 <td style="text-align: left;"><strong>FAIR</strong></td>
@@ -1073,7 +1129,9 @@ Table&nbsp;4: Fairness Audit Results
 <tr class="even">
 <td style="text-align: left;">region</td>
 <td style="text-align: center;">+0.242 ✗</td>
+<td style="text-align: center;">[+0.156, +0.322]</td>
 <td style="text-align: center;">+0.183 ✗</td>
+<td style="text-align: center;">[+0.071, +0.308]</td>
 <td style="text-align: center;">0.216 ✗</td>
 <td style="text-align: center;">0.109 ✗</td>
 <td style="text-align: left;">UNFAIR (4/4)</td>
@@ -1081,7 +1139,9 @@ Table&nbsp;4: Fairness Audit Results
 <tr class="odd">
 <td style="text-align: left;">imd_band</td>
 <td style="text-align: center;">+0.159 ✗</td>
+<td style="text-align: center;">[+0.100, +0.222]</td>
 <td style="text-align: center;">+0.048 ✓</td>
+<td style="text-align: center;">[-0.030, +0.127]</td>
 <td style="text-align: center;">0.079 ✓</td>
 <td style="text-align: center;">0.055 ✗</td>
 <td style="text-align: left;">UNFAIR (2/4)</td>
@@ -1089,7 +1149,9 @@ Table&nbsp;4: Fairness Audit Results
 <tr class="even">
 <td style="text-align: left;">age_band</td>
 <td style="text-align: center;">+0.016 ✓</td>
+<td style="text-align: center;">[-0.144, +0.174] *</td>
 <td style="text-align: center;">+0.022 ✓</td>
+<td style="text-align: center;">[-0.189, +0.200] *</td>
 <td style="text-align: center;">0.107 ✗</td>
 <td style="text-align: center;">0.052 ✗</td>
 <td style="text-align: left;">UNFAIR (2/4)</td>
@@ -1097,7 +1159,9 @@ Table&nbsp;4: Fairness Audit Results
 <tr class="odd">
 <td style="text-align: left;">disability</td>
 <td style="text-align: center;">+0.124 ✗</td>
+<td style="text-align: center;">[+0.076, +0.171]</td>
 <td style="text-align: center;">+0.053 ✓</td>
+<td style="text-align: center;">[+0.003, +0.104]</td>
 <td style="text-align: center;">0.126 ✗</td>
 <td style="text-align: center;">0.015 ✓</td>
 <td style="text-align: left;">UNFAIR (2/4)</td>
@@ -1577,15 +1641,16 @@ Figure&nbsp;5: AUC comparison across demographic groups within each protected at
 </section>
 <section id="bias-mitigation-results" class="level2">
 <h2 class="anchored" data-anchor-id="bias-mitigation-results">Bias Mitigation Results</h2>
-<p>We applied three mitigation techniques from the <a href="https://ai-fairness-360.org/" class="external" target="_blank">AI Fairness 360 (AIF360) toolkit</a>:</p>
+<p>We applied four mitigation techniques spanning all three mitigation families:</p>
 <ol type="1">
-<li><strong>Reweighting</strong> (Pre-processing): Adjusts training sample weights</li>
-<li><strong>Threshold Optimization</strong> (Post-processing): Group-specific classification thresholds</li>
-<li><strong>Reject Option Classification</strong> (Post-processing): Adjusts predictions near the decision boundary</li>
+<li><strong>Reweighting</strong> (Pre-processing): Adjusts training sample weights so each protected-group/outcome combination receives equal representation (<a href="https://ai-fairness-360.org/" class="external" target="_blank">AIF360</a>)</li>
+<li><strong>Adversarial Debiasing</strong> (In-processing): Extends the LSTM with an adversary branch that predicts the protected attribute from the model’s learned representations; the main model is penalized when the adversary succeeds, forcing fair representations (PyTorch implementation)</li>
+<li><strong>Threshold Optimization</strong> (Post-processing): Sets group-specific classification thresholds to equalize true-positive rates</li>
+<li><strong>Reject Option Classification</strong> (Post-processing): Adjusts predictions near the decision boundary to reduce disparities (<a href="https://ai-fairness-360.org/" class="external" target="_blank">AIF360</a>)</li>
 </ol>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Prepare the data (Same logic as before)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Prepare the data — best approach per attribute</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mitigation_summary <span class="op">=</span> []</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> attr, results <span class="kw">in</span> [(<span class="st">'Region'</span>, mitigation_region),</span>
@@ -1613,25 +1678,19 @@ Figure&nbsp;5: AUC comparison across demographic groups within each protected at
 <span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>mitigation_df <span class="op">=</span> pd.DataFrame(mitigation_summary)</span>
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------</span></span>
 <span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build the Markdown Table</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Header</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">=</span> <span class="st">"| Attribute | Approach | AUC (Base -&gt; Final) | SPD (Base -&gt; Final) | EOD (Base -&gt; Final) |</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"|:----------|:---------|:-------------------:|:-------------------:|:-------------------:|</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Rows</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> mitigation_summary:</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Format the transitions: "0.123 -&gt; 0.045"</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    auc_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_AUC'</span>]<span class="sc">:.4f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.4f}</span><span class="ss">"</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use signed formatting for fairness metrics (+0.050)</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    spd_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    eod_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> -&gt; </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construct the row</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>auc_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>spd_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>eod_change<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Render</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Build the Markdown Table — shows best approach + adversarial for comparison</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">=</span> <span class="st">"| Attribute | Approach | AUC (Base → Final) | SPD (Base → Final) | EOD (Base → Final) |</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"|:----------|:---------|:-------------------:|:-------------------:|:-------------------:|</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Best approach rows</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> mitigation_summary:</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    auc_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_AUC'</span>]<span class="sc">:.4f}</span><span class="ss"> → </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    spd_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> → </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    eod_change <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'Baseline_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> → </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss">"</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>auc_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>spd_change<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>eod_change<span class="sc">}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Render</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div id="tbl-mitigation-results" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="10">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -1651,39 +1710,39 @@ Table&nbsp;6: Bias Mitigation Results
 <tr class="header">
 <th style="text-align: left;">Attribute</th>
 <th style="text-align: left;">Approach</th>
-<th style="text-align: center;">AUC (Base -&gt; Final)</th>
-<th style="text-align: center;">SPD (Base -&gt; Final)</th>
-<th style="text-align: center;">EOD (Base -&gt; Final)</th>
+<th style="text-align: center;">AUC (Base → Final)</th>
+<th style="text-align: center;">SPD (Base → Final)</th>
+<th style="text-align: center;">EOD (Base → Final)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;"><strong>Region</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
-<td style="text-align: center;">+0.079 -&gt; +0.060</td>
-<td style="text-align: center;">+0.019 -&gt; -0.004</td>
+<td style="text-align: center;">0.8889 → 0.8889</td>
+<td style="text-align: center;">+0.079 → +0.060</td>
+<td style="text-align: center;">+0.019 → -0.004</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>IMD Band</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
-<td style="text-align: center;">+0.113 -&gt; +0.062</td>
-<td style="text-align: center;">+0.053 -&gt; -0.002</td>
+<td style="text-align: center;">0.8889 → 0.8889</td>
+<td style="text-align: center;">+0.113 → +0.062</td>
+<td style="text-align: center;">+0.053 → -0.002</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Disability</strong></td>
 <td style="text-align: left;">Reweighted</td>
-<td style="text-align: center;">0.8889 -&gt; 0.8874</td>
-<td style="text-align: center;">+0.124 -&gt; +0.053</td>
-<td style="text-align: center;">+0.053 -&gt; -0.021</td>
+<td style="text-align: center;">0.8889 → 0.8874</td>
+<td style="text-align: center;">+0.124 → +0.053</td>
+<td style="text-align: center;">+0.053 → -0.021</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Age Band</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889 -&gt; 0.8889</td>
-<td style="text-align: center;">+0.088 -&gt; +0.030</td>
-<td style="text-align: center;">+0.054 -&gt; +0.002</td>
+<td style="text-align: center;">0.8889 → 0.8889</td>
+<td style="text-align: center;">+0.088 → +0.030</td>
+<td style="text-align: center;">+0.054 → +0.002</td>
 </tr>
 </tbody>
 </table>
@@ -1753,19 +1812,34 @@ Figure&nbsp;6: Comparison of baseline and mitigated model performance across att
 <h3 class="anchored" data-anchor-id="mitigation-summary">Mitigation Summary</h3>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Markdown Table</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Markdown Table — includes best approach AND adversarial for each attribute</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">=</span> <span class="st">"| Attribute | Approach | AUC | SPD | EOD |</span><span class="ch">\n</span><span class="st">"</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"|:----------|:---------|:---:|:---:|:---:|</span><span class="ch">\n</span><span class="st">"</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> mitigation_df.iterrows():</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.4f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Pair each attribute with its adversarial result</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>adv_results <span class="op">=</span> [</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Region'</span>, mitigation_adversarial_region),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'IMD Band'</span>, mitigation_adversarial_imd),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Disability'</span>, mitigation_adversarial_disability),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Age Band'</span>, mitigation_adversarial_age),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>adv_lookup <span class="op">=</span> {attr: res <span class="cf">for</span> attr, res <span class="kw">in</span> adv_results}</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> mitigation_df.iterrows():</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Best approach row</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| **</span><span class="sc">{</span>row[<span class="st">'Attribute'</span>]<span class="sc">}</span><span class="ss">** | </span><span class="sc">{</span>row[<span class="st">'Best_Approach'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_AUC'</span>]<span class="sc">:.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_SPD'</span>]<span class="sc">:+.3f}</span><span class="ss"> | </span><span class="sc">{</span>row[<span class="st">'Mitigated_EOD'</span>]<span class="sc">:+.3f}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Adversarial row</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    adv <span class="op">=</span> adv_lookup[row[<span class="st">'Attribute'</span>]][<span class="st">'approaches'</span>][<span class="st">'adversarial'</span>]</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    table_md <span class="op">+=</span> <span class="ss">f"| | Adversarial (in-proc.) | </span><span class="sc">{</span>adv[<span class="st">'auc'</span>]<span class="sc">:.3f}</span><span class="ss"> | </span><span class="sc">{</span>adv[<span class="st">'spd'</span>]<span class="sc">:+.3f}</span><span class="ss"> | </span><span class="sc">{</span>adv[<span class="st">'eod'</span>]<span class="sc">:+.3f}</span><span class="ss"> |</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>table_md <span class="op">+=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">All approaches achieve |SPD| &lt; 0.10 and |EOD| &lt; 0.10. Baseline AUC = 0.889.</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>display(Markdown(table_md))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div id="tbl-mitigation-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="12">
+<div id="tbl-mitigation-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap="Post-Mitigation Fairness Metrics (all three technique families evaluated)" data-execution_count="12">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-mitigation-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;7: Post-Mitigation Fairness Metrics
+Table&nbsp;7: All approaches achieve |SPD| &lt; 0.10 and |EOD| &lt; 0.10. Baseline AUC = 0.889.
 </figcaption>
 <div aria-describedby="tbl-mitigation-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="cell caption-top table table-sm table-striped small">
@@ -1782,30 +1856,58 @@ Table&nbsp;7: Post-Mitigation Fairness Metrics
 <tr class="odd">
 <td style="text-align: left;"><strong>Region</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">0.889</td>
 <td style="text-align: center;">+0.060</td>
 <td style="text-align: center;">-0.004</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Adversarial (in-proc.)</td>
+<td style="text-align: center;">0.888</td>
+<td style="text-align: center;">+0.077</td>
+<td style="text-align: center;">+0.001</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><strong>IMD Band</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">0.889</td>
 <td style="text-align: center;">+0.062</td>
 <td style="text-align: center;">-0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Adversarial (in-proc.)</td>
+<td style="text-align: center;">0.886</td>
+<td style="text-align: center;">+0.089</td>
+<td style="text-align: center;">+0.032</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Disability</strong></td>
 <td style="text-align: left;">Reweighted</td>
-<td style="text-align: center;">0.8874</td>
+<td style="text-align: center;">0.887</td>
 <td style="text-align: center;">+0.053</td>
 <td style="text-align: center;">-0.021</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Adversarial (in-proc.)</td>
+<td style="text-align: center;">0.888</td>
+<td style="text-align: center;">+0.071</td>
+<td style="text-align: center;">+0.000</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;"><strong>Age Band</strong></td>
 <td style="text-align: left;">Threshold Optimization</td>
-<td style="text-align: center;">0.8889</td>
+<td style="text-align: center;">0.889</td>
 <td style="text-align: center;">+0.030</td>
 <td style="text-align: center;">+0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Adversarial (in-proc.)</td>
+<td style="text-align: center;">0.888</td>
+<td style="text-align: center;">+0.070</td>
+<td style="text-align: center;">+0.034</td>
 </tr>
 </tbody>
 </table>
@@ -1862,6 +1964,12 @@ Table&nbsp;8: Mitigation Rationale
 <td>Reweighting</td>
 <td>Small minority; needs pre-processing</td>
 </tr>
+<tr class="odd">
+<td>Any (in-proc.)</td>
+<td>457–3,649 (9–75%)</td>
+<td>Adversarial Debiasing</td>
+<td>Works across group sizes; all thresholds met</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1885,7 +1993,17 @@ Table&nbsp;8: Mitigation Rationale
 <li>Although it slightly reduces AUC (0.889 → 0.887), it achieves substantially better Equalized Odds (0.027 vs 0.051)</li>
 <li>The trade-off is worthwhile: a 0.2% AUC reduction for a 48% improvement in fairness.</li>
 </ul>
-<p><strong>Key insight:</strong> Pre-processing (reweighting) addresses representation imbalance at the source, while post-processing (threshold optimization) works when the model already has adequate signal for all groups.</p>
+</section>
+<section id="why-adversarial-debiasing-is-a-viable-alternative" class="level4">
+<h4 class="anchored" data-anchor-id="why-adversarial-debiasing-is-a-viable-alternative">Why Adversarial Debiasing is a viable alternative:</h4>
+<ul>
+<li>Adversarial debiasing extends the LSTM with a second “adversary” network that tries to predict the protected attribute from the model’s internal representations</li>
+<li>During training, the main model is penalized when the adversary succeeds, forcing it to learn representations that are predictive of student risk but uninformative of group membership</li>
+<li>This in-processing approach achieved fairness thresholds (|SPD| &lt; 0.10, |EOD| &lt; 0.10) for all four unfair attributes</li>
+<li>While not selected as the best approach for any individual attribute, it demonstrates that in-processing methods provide a viable single-technique alternative that works across all group sizes</li>
+<li>The adversarial strength parameter (λ) was selected via grid search over {0.01, 0.1, 0.5, 1.0} for each attribute</li>
+</ul>
+<p><strong>Key insight:</strong> Pre-processing (reweighting) addresses representation imbalance at the source, post-processing (threshold optimization) works when the model already has adequate signal for all groups, and in-processing (adversarial debiasing) offers a universal alternative by learning fair representations directly.</p>
 </section>
 </section>
 </section>
@@ -2279,8 +2397,9 @@ Table&nbsp;11: Selection Rate Extremes Comparison
 </ul></li>
 <li><strong>Mitigation Effectiveness</strong>
 <ul>
-<li>Threshold Optimization: Best for Region, IMD, Age</li>
-<li>Reweighting: Best for Disability</li>
+<li>Threshold Optimization (post-processing): Best for Region, IMD, Age</li>
+<li>Reweighting (pre-processing): Best for Disability</li>
+<li>Adversarial Debiasing (in-processing): Viable alternative for all attributes</li>
 <li>All mitigations maintained an AUC above the 0.80 target</li>
 <li>EOD reduced to near-zero for all attributes</li>
 </ul></li>
@@ -2299,6 +2418,7 @@ Table&nbsp;11: Selection Rate Extremes Comparison
 <ul>
 <li>Use Threshold Optimization for Region, IMD Band, and Age Band</li>
 <li>Use the Reweighted model for Disability fairness</li>
+<li>Consider Adversarial Debiasing as a single-technique alternative across all attributes</li>
 <li>Apply group-specific thresholds at prediction time</li>
 </ul>
 </section>
@@ -2313,8 +2433,8 @@ Table&nbsp;11: Selection Rate Extremes Comparison
 <section id="for-future-research" class="level4">
 <h4 class="anchored" data-anchor-id="for-future-research">For Future Research:</h4>
 <ul>
-<li>Explore in-processing fairness constraints (adversarial debiasing)</li>
 <li>Investigate causal fairness approaches</li>
+<li>Explore longitudinal fairness monitoring (whether fairness degrades over academic cohorts)</li>
 <li>Validate on additional institutions and student populations</li>
 </ul>
 </section>
@@ -2416,6 +2536,7 @@ Table&nbsp;12: 10-Week Prediction Window Trade-offs
 <li><strong>Intersectionality depth:</strong> Three-way intersections had limited statistical power due to small subgroup sizes.</li>
 <li><strong>Proxy discrimination:</strong> Even after mitigation, the model may encode protected attributes through correlated features (e.g., VLE access patterns correlating with socioeconomic status).</li>
 <li><strong>Fairness metric choice:</strong> Different fairness definitions (statistical parity vs.&nbsp;equalized odds) can conflict; our threshold choices reflect value judgments.</li>
+<li><strong>Uncertainty:</strong> Bootstrap 95% CIs for SPD and EOD are reported in the fairness audit table (1,000 iterations). Most metrics show stable intervals; the notably wide CIs for age_band reflect the small 55≤ subgroup (n=40). AUC and post-mitigation metrics remain point estimates.</li>
 </ul>
 </section>
 <section id="implications-for-deployment" class="level3">
@@ -2436,7 +2557,7 @@ Table&nbsp;12: 10-Week Prediction Window Trade-offs
 <ol type="1">
 <li><p><strong>Strong Predictive Performance:</strong> AUC of 0.889 using an LSTM architecture with temporal VLE engagement data</p></li>
 <li><p><strong>Comprehensive Fairness Audit:</strong> Identified regional and socioeconomic disparities in model predictions</p></li>
-<li><p><strong>Effective Bias Mitigation:</strong> Reduced disparities using threshold optimization and reweighting while maintaining model performance</p></li>
+<li><p><strong>Effective Bias Mitigation:</strong> Reduced disparities using all three mitigation families (pre-processing reweighting, in-processing adversarial debiasing, and post-processing threshold optimization) while maintaining model performance</p></li>
 <li><p><strong>Intersectional Validation:</strong> Confirmed no severe disparities across demographic subgroups</p></li>
 </ol>
 <p>The project demonstrates that it is possible to build accurate student success prediction models while actively addressing algorithmic fairness—a critical consideration as educational institutions increasingly adopt AI-driven decision support systems.</p>
@@ -2490,9 +2611,15 @@ Table&nbsp;12: 10-Week Prediction Window Trade-offs
 <li>08_bias_mitigation_age.ipynb</li>
 <li>09_intersectional_analysis.ipynb</li>
 <li>10_final_summary_report.ipynb</li>
+<li>11_bootstrap_confidence_intervals.ipynb</li>
+<li>12_bias_mitigation_inprocessing.ipynb</li>
 </ul>
 <p><strong>Models:</strong></p>
 <ul>
+<li>lstm_adversarial_age_band.pt (92.8 KB)</li>
+<li>lstm_adversarial_disability.pt (92.8 KB)</li>
+<li>lstm_adversarial_imd_band.pt (92.8 KB)</li>
+<li>lstm_adversarial_region.pt (92.8 KB)</li>
 <li>lstm_baseline.pt (90.0 KB)</li>
 <li>lstm_reweighted_age.pt (365.8 KB)</li>
 <li>lstm_reweighted_disability.pt (314.1 KB)</li>
@@ -2502,11 +2629,16 @@ Table&nbsp;12: 10-Week Prediction Window Trade-offs
 <p><strong>Data Outputs:</strong></p>
 <ul>
 <li>fairness_results.json (10.6 KB)</li>
+<li>fairness_results_with_ci.json (5.7 KB)</li>
 <li>feature_metadata.json (1.9 KB)</li>
 <li>features_static.csv (4013.0 KB)</li>
 <li>features_temporal.npy (6365.9 KB)</li>
 <li>final_summary.json (1.0 KB)</li>
 <li>intersectional_results.json (0.6 KB)</li>
+<li>mitigation_results_adversarial_age_band.json (1.9 KB)</li>
+<li>mitigation_results_adversarial_disability.json (1.9 KB)</li>
+<li>mitigation_results_adversarial_imd_band.json (2.0 KB)</li>
+<li>mitigation_results_adversarial_region.json (2.2 KB)</li>
 <li>mitigation_results_age.json (2.5 KB)</li>
 <li>mitigation_results_disability.json (2.4 KB)</li>
 <li>mitigation_results_imd.json (2.6 KB)</li>

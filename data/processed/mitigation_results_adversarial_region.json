@@ -1,0 +1,79 @@
+{
+  "target_attribute": "region",
+  "method": "adversarial_debiasing",
+  "best_lambda": 0.1,
+  "privileged_groups": [
+    "Ireland",
+    "North Region",
+    "South East Region",
+    "South Region"
+  ],
+  "unprivileged_groups": [
+    "East Anglian Region",
+    "East Midlands Region",
+    "London Region",
+    "North Western Region",
+    "Scotland",
+    "South West Region",
+    "Wales",
+    "West Midlands Region",
+    "Yorkshire Region"
+  ],
+  "lambda_search": [
+    {
+      "lambda": 0.01,
+      "val_auc": 0.8957056778287875,
+      "val_eod": 0.01657332760473318,
+      "val_spd": 0.03252005631410759
+    },
+    {
+      "lambda": 0.1,
+      "val_auc": 0.8956847488522821,
+      "val_eod": 0.013522598745636105,
+      "val_spd": 0.027538492480278898
+    },
+    {
+      "lambda": 0.5,
+      "val_auc": 0.8960565757493925,
+      "val_eod": 0.01922931491981761,
+      "val_spd": 0.03356588974055286
+    },
+    {
+      "lambda": 1.0,
+      "val_auc": 0.8955173170402377,
+      "val_eod": 0.018719890569333653,
+      "val_spd": 0.030023017274128982
+    }
+  ],
+  "approaches": {
+    "baseline": {
+      "auc": 0.8889172777737862,
+      "privileged_tpr": 0.7296819787985865,
+      "privileged_fpr": 0.09792284866468842,
+      "privileged_selection_rate": 0.38629032258064516,
+      "privileged_auc": 0.8926743978777615,
+      "unprivileged_tpr": 0.7483870967741936,
+      "unprivileged_fpr": 0.11627906976744186,
+      "unprivileged_selection_rate": 0.4653329679364209,
+      "unprivileged_auc": 0.8868896373891044,
+      "spd": 0.07904264535577576,
+      "eod": 0.018705117975607033,
+      "eq_odds": 0.03706133907836047
+    },
+    "adversarial": {
+      "auc": 0.8878756369872627,
+      "privileged_tpr": 0.7685512367491166,
+      "privileged_fpr": 0.1172106824925816,
+      "privileged_selection_rate": 0.41451612903225804,
+      "privileged_auc": 0.8911330488303573,
+      "unprivileged_tpr": 0.7692307692307693,
+      "unprivileged_fpr": 0.1481028151774786,
+      "unprivileged_selection_rate": 0.4910934502603453,
+      "unprivileged_auc": 0.8859544845725602,
+      "spd": 0.07657732122808725,
+      "eod": 0.0006795324816526449,
+      "eq_odds": 0.031571665166549634
+    }
+  },
+  "recommendation": "Adversarial Debiasing"
+}
