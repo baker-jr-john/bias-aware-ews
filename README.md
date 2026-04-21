@@ -25,7 +25,7 @@ The baseline model exhibited significant bias across protected attributes (espec
 ├── data/
 │   ├── raw/                  # OULAD CSV files (not tracked - see below)
 │   └── processed/            # Feature engineering outputs
-├── notebooks/                # Analysis pipeline (01-10)
+├── notebooks/                # Analysis pipeline (01-12)
 ├── models/                   # Trained PyTorch models (.pt)
 ├── figures/                  # Visualizations (PNG)
 └── docs/                     # Reference materials
@@ -86,6 +86,8 @@ Run in order:
 | `08_bias_mitigation_age.ipynb` | Age band fairness mitigation |
 | `09_intersectional_analysis.ipynb` | Intersectional fairness validation |
 | `10_final_summary_report.ipynb` | Comprehensive report with methodology, results, and limitations |
+| `11_bootstrap_confidence_intervals.ipynb` | Bootstrap 95% CIs for all fairness metrics (1,000 iterations) |
+| `12_bias_mitigation_inprocessing.ipynb` | Adversarial debiasing (in-processing, PyTorch, λ grid search) |
 
 ## Model Architecture
 
@@ -110,6 +112,7 @@ Dual-branch LSTM combining temporal VLE engagement with static demographic featu
 
 **Mitigation approaches:**
 - Reweighting (pre-processing) — best for underrepresented groups (disability: 9% of data)
+- Adversarial Debiasing (in-processing) — gradient reversal to reduce attribute predictability during training
 - Threshold Optimization (post-processing) — best for well-represented groups (region, IMD, age)
 - Reject Option Classification (post-processing)
 
